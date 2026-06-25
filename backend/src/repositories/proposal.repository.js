@@ -1,0 +1,179 @@
+const pool = require("../config/db");
+
+const createProposal = async (proposalData) => {
+
+    const query = `
+        INSERT INTO event_proposals
+        (
+            club_id,
+            created_by,
+            category_id,
+            title,
+            description,
+            venue,
+            start_date,
+            end_date,
+            expected_participants
+        )
+        VALUES
+        (
+            $1,$2,$3,$4,$5,$6,$7,$8,$9
+        )
+        RETURNING *;
+    `;
+
+    const values = [
+        proposalData.club_id,
+        proposalData.created_by,
+        proposalData.category_id,
+        proposalData.title,
+        proposalData.description,
+        proposalData.venue,
+        proposalData.start_date,
+        proposalData.end_date,
+        proposalData.expected_participants
+    ];
+
+    const result = await pool.query(query, values);
+
+    return result.rows[0];
+
+};
+
+const getAllProposals = async () => {
+    const query = `
+        SELECT
+            proposal_id,
+            club_id,
+            created_by,
+            category_id,
+            title,
+            description,
+            venue,
+            start_date,
+            end_date,
+            expected_participants,
+            status,
+            created_at
+        FROM event_proposals
+        ORDER BY created_at DESC;
+    `;
+
+    const result = await pool.query(query);
+
+    return result.rows;
+};
+const getProposalById = async (proposalId) => {
+
+    const query = `
+        SELECT
+            proposal_id,
+            club_id,
+            created_by,
+            category_id,
+            title,
+            description,
+            venue,
+            start_date,
+            end_date,
+            expected_participants,
+            status,
+            rejection_reason,
+            created_at,
+            updated_at
+        FROM event_proposals
+        WHERE proposal_id = $1;
+    `;
+
+    const result = await pool.query(query, [proposalId]);
+
+    return result.rows[0];
+};
+const updateProposal = async (proposalId, proposalData) => {
+
+    const query = `
+        UPDATE event_proposals
+        SET
+            club_id = $1,
+            category_id = $2,
+            title = $3,
+            description = $4,
+            venue = $5,
+            start_date = $6,
+            end_date = $7,
+            expected_participants = $8,
+            updated_at = NOW()
+        WHERE proposal_id = $9
+        RETURNING *;
+    `;
+
+    const values = [
+        proposalData.club_id,
+        proposalData.category_id,
+        proposalData.title,
+        proposalData.description,
+        proposalData.venue,
+        proposalData.start_date,
+        proposalData.end_date,
+        proposalData.expected_participants,
+        proposalId
+    ];
+
+    const result = await pool.query(query, values);
+
+    return result.rows[0];
+};
+
+const deleteProposal = async (proposalId) => {
+
+    const query = `
+        DELETE FROM event_proposals
+        WHERE proposal_id = $1
+        RETURNING *;
+    `;
+
+    const result = await pool.query(query, [proposalId]);
+
+    return result.rows[0];
+};
+const approveProposal = async (proposalId) => {
+
+    const query = `
+        UPDATE event_proposals
+        SET
+            status = 'Approved',
+            rejection_reason = NULL,
+            updated_at = NOW()
+        WHERE proposal_id = $1
+        RETURNING *;
+    `;
+
+    const result = await pool.query(query, [proposalId]);
+
+    return result.rows[0];
+};
+
+const rejectProposal = async (proposalId, rejectionReason) => {
+
+    const query = `
+        UPDATE event_proposals
+        SET
+            status = 'Rejected',
+            rejection_reason = $1,
+            updated_at = NOW()
+        WHERE proposal_id = $2
+        RETURNING *;
+    `;
+
+    const result = await pool.query(query, [
+        rejectionReason,
+        proposalId
+    ]);
+
+    return result.rows[0];
+};
+
+module.exports = {
+    createProposal,getAllProposals,getProposalById,updateProposal,deleteProposal,approveProposal
+    ,rejectProposal
+};
