@@ -13,6 +13,12 @@ const userRoutes = require("./routes/user.routes");
 const departmentRoutes = require("./routes/department.routes");
 const eventRoutes = require("./routes/event.routes");
 const proposalRoutes = require("./routes/proposal.routes");
+const registrationRoutes =
+require("./routes/registration.routes");
+const dashboardRoutes =
+require("./routes/dashboard.routes");
+
+
 
 
 // Root Route
@@ -31,7 +37,9 @@ app.use("/api/users", userRoutes);
 app.use("/api/departments", departmentRoutes);
 
 app.use("/api/proposals", proposalRoutes);
-// app.use("/api/events",eventRoutes);
+app.use("/api/events",eventRoutes);
+app.use("/api",registrationRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.use(errorHandler);
 module.exports = app;

@@ -1,5 +1,5 @@
 const proposalRepository = require("../repositories/proposal.repository");
-const ApiError = require("../errors/ApiError");
+const ApiError = require("../utils/ApiError");
 
 const createProposal = async (proposalData) => {
 

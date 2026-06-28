@@ -1,5 +1,5 @@
 const departmentRepository = require("../repositories/department.repository");
-const ApiError = require("../errors/ApiError");
+const ApiError = require("../utils/ApiError");
 
 const getAllDepartments = async () => {
     return await departmentRepository.getAllDepartments();

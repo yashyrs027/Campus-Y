@@ -42,7 +42,7 @@ const deleteUser = async (userId) => {
     return user;
 };
 
-const ApiError = require("../errors/ApiError");
+const ApiError = require("../utils/ApiError");
 module.exports = {
     getAllUsers,
      getUserById,
