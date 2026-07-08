@@ -4,7 +4,7 @@ const router = express.Router();
 
 // Controller
 const authController = require("../controllers/auth.controller");
-const {registerValidation,loginValidation,updateProfileValidation,logout, changePasswordValidation,validate} = require("../validators/auth.validator");
+const {registerValidation,loginValidation,updateProfileValidation,changePasswordValidation,validate} = require("../validators/auth.validator");
 const authenticate = require("../middlewares/auth.middleware");
 
 
@@ -12,7 +12,7 @@ const authenticate = require("../middlewares/auth.middleware");
 const ROLES = require("../constants/roles");
 const authorize = require("../middlewares/rbac.middleware");
 // Register API
-router.post("/register", validate, authController.register);
+router.post("/register", registerValidation, validate, authController.register);
 
 router.post( "/login",loginValidation,validate,authController.login);
 

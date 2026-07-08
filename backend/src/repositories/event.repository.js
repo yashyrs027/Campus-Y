@@ -50,11 +50,12 @@ const createEvent = async (eventData) => {
             end_datetime,
             capacity,
             registration_deadline,
+            current_registrations,
             status
         )
         VALUES
         (
-            $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11
+            $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12
         )
         RETURNING *`,
         [
@@ -68,6 +69,7 @@ const createEvent = async (eventData) => {
             end_datetime,
             capacity,
             registration_deadline,
+            0,
             status
         ]
     );
@@ -76,8 +78,28 @@ const createEvent = async (eventData) => {
 };
 const getAllEvents = async () => {
     const result = await pool.query(`
-        SELECT *
-        FROM events
+        SELECT
+            e.*,
+            ec.category_name,
+            c.club_id,
+            c.club_name,
+            COUNT(er.registration_id) FILTER (
+                WHERE er.status = 'Registered'
+            )::int AS registered
+        FROM events e
+        LEFT JOIN event_categories ec
+            ON e.category_id = ec.category_id
+        LEFT JOIN event_proposals ep
+            ON e.proposal_id = ep.proposal_id
+        LEFT JOIN clubs c
+            ON ep.club_id = c.club_id
+        LEFT JOIN event_registrations er
+            ON e.event_id = er.event_id
+        GROUP BY
+            e.event_id,
+            ec.category_name,
+            c.club_id,
+            c.club_name
         ORDER BY start_datetime ASC
     `);
 
@@ -86,9 +108,29 @@ const getAllEvents = async () => {
 
 const getEventById = async (eventId) => {
     const result = await pool.query(
-        `SELECT *
-         FROM events
-         WHERE event_id = $1`,
+        `SELECT
+            e.*,
+            ec.category_name,
+            c.club_id,
+            c.club_name,
+            COUNT(er.registration_id) FILTER (
+                WHERE er.status = 'Registered'
+            )::int AS registered
+         FROM events e
+         LEFT JOIN event_categories ec
+            ON e.category_id = ec.category_id
+         LEFT JOIN event_proposals ep
+            ON e.proposal_id = ep.proposal_id
+         LEFT JOIN clubs c
+            ON ep.club_id = c.club_id
+         LEFT JOIN event_registrations er
+            ON e.event_id = er.event_id
+         WHERE e.event_id = $1
+         GROUP BY
+            e.event_id,
+            ec.category_name,
+            c.club_id,
+            c.club_name`,
         [eventId]
     );
 

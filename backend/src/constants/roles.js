@@ -3,6 +3,7 @@ const ROLES = {
     HOD: 2,
     FACULTY: 3,
     CLUB_PRESIDENT: 4,
+    CLUB_COORDINATOR: 4,
     VICE_PRESIDENT: 5,
     STUDENT: 6,
 };

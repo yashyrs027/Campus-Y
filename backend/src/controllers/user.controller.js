@@ -74,8 +74,24 @@ const deleteUser = async (req, res, next) => {
 
 };
 
+const assignRole = async (req, res, next) => {
+    try {
+        const { email, role_id } = req.body;
+        const user = await userService.assignRoleByEmail(email, role_id);
+        return res.status(200).json({
+            success: true,
+            message: "User role assigned successfully.",
+            data: user
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     getAllUsers,
     getUserById,
-    updateUser,deleteUser
+    updateUser,
+    deleteUser,
+    assignRole
 };

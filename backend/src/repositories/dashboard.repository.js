@@ -134,7 +134,11 @@ const countPendingProposals = async () => {
     const result = await pool.query(`
         SELECT COUNT(*) AS total
         FROM event_proposals
-        WHERE status = 'Pending'
+        WHERE status IN (
+            'Pending',
+            'Under Faculty Review',
+            'Under HOD Review'
+        )
     `);
 
     return Number(result.rows[0].total);

@@ -43,24 +43,46 @@ const createRegistration = async (
     studentId,
     status
 ) => {
+    const client = await pool.connect();
 
-    const result = await pool.query(
-        `INSERT INTO event_registrations
-        (
-            event_id,
-            student_id,
-            status
-        )
-        VALUES ($1,$2,$3)
-        RETURNING *`,
-        [
-            eventId,
-            studentId,
-            status
-        ]
-    );
+    try {
+        await client.query("BEGIN");
 
-    return result.rows[0];
+        const result = await client.query(
+            `INSERT INTO event_registrations
+            (
+                event_id,
+                student_id,
+                status
+            )
+            VALUES ($1,$2,$3)
+            RETURNING *`,
+            [
+                eventId,
+                studentId,
+                status
+            ]
+        );
+
+        if (status === "Registered") {
+            await client.query(
+                `UPDATE events
+                 SET
+                    current_registrations = COALESCE(current_registrations, 0) + 1,
+                    updated_at = NOW()
+                 WHERE event_id = $1`,
+                [eventId]
+            );
+        }
+
+        await client.query("COMMIT");
+        return result.rows[0];
+    } catch (error) {
+        await client.query("ROLLBACK");
+        throw error;
+    } finally {
+        client.release();
+    }
 };
 const getMyRegistrations = async (studentId) => {
 
@@ -112,17 +134,39 @@ const findRegistrationById = async (registrationId) => {
     return result.rows[0];
 };
 const deleteRegistration = async (registrationId) => {
+    const client = await pool.connect();
 
-    const result = await pool.query(
-        `
-        DELETE FROM event_registrations
-        WHERE registration_id = $1
-        RETURNING *
-        `,
-        [registrationId]
-    );
+    try {
+        await client.query("BEGIN");
 
-    return result.rows[0];
+        const result = await client.query(
+            `DELETE FROM event_registrations
+             WHERE registration_id = $1
+             RETURNING *`,
+            [registrationId]
+        );
+
+        const registration = result.rows[0];
+
+        if (registration?.status === "Registered") {
+            await client.query(
+                `UPDATE events
+                 SET
+                    current_registrations = GREATEST(COALESCE(current_registrations, 0) - 1, 0),
+                    updated_at = NOW()
+                 WHERE event_id = $1`,
+                [registration.event_id]
+            );
+        }
+
+        await client.query("COMMIT");
+        return registration;
+    } catch (error) {
+        await client.query("ROLLBACK");
+        throw error;
+    } finally {
+        client.release();
+    }
 };
 const getEventRegistrations = async (eventId) => {
 
@@ -160,6 +204,7 @@ const getRegistrationCount = async (eventId) => {
         FROM events e
         LEFT JOIN event_registrations er
             ON e.event_id = er.event_id
+            AND er.status = 'Registered'
         WHERE e.event_id = $1
         GROUP BY e.event_id, e.capacity
         `,

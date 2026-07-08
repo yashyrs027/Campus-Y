@@ -29,13 +29,13 @@ router.get(
 router.get(
     "/faculty",
     authenticate,
-    authorize("3"),
+    authorize([ROLES.FACULTY]),
     dashboardController.getFacultyDashboard
 );
 router.get(
     "/club",
     authenticate,
-    authorize([ROLES.CLUB_PRESIDENT]),
+    authorize([ROLES.CLUB_PRESIDENT, ROLES.VICE_PRESIDENT]),
     dashboardController.getClubDashboard
 );
 

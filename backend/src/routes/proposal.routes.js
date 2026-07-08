@@ -22,7 +22,8 @@ router.post(
     "/",
     authenticate,
     authorize([
-        ROLES.CLUB_COORDINATOR
+        ROLES.CLUB_COORDINATOR,
+        ROLES.ADMIN
     ]),
     createProposalValidation,
     proposalController.createProposal
@@ -32,7 +33,9 @@ router.get(
     authenticate,
     authorize([
         ROLES.ADMIN,
-        ROLES.FACULTY
+        ROLES.FACULTY,
+        ROLES.HOD,
+        ROLES.CLUB_COORDINATOR
     ]),
     proposalController.getAllProposals
 );
@@ -67,7 +70,8 @@ router.put(
     authenticate,
     authorize([
         ROLES.ADMIN,
-        ROLES.FACULTY
+        ROLES.FACULTY,
+        ROLES.HOD
     ]),
     proposalController.approveProposal
 );
@@ -76,7 +80,8 @@ router.put(
     authenticate,
     authorize([
         ROLES.ADMIN,
-        ROLES.FACULTY
+        ROLES.FACULTY,
+        ROLES.HOD
     ]),
     proposalController.rejectProposal
 );

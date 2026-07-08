@@ -43,8 +43,23 @@ const deleteUser = async (userId) => {
 };
 
 const ApiError = require("../utils/ApiError");
+
+const assignRoleByEmail = async (email, roleId) => {
+    if (!email) {
+        throw new ApiError(400, "Email address is required.");
+    }
+    if (!roleId) {
+        throw new ApiError(400, "Role ID is required.");
+    }
+    const user = await userRepository.assignRoleByEmail(email, Number(roleId));
+    if (!user) {
+        throw new ApiError(404, "User with this email address not found.");
+    }
+    return user;
+};
+
 module.exports = {
     getAllUsers,
      getUserById,
-     updateUser,deleteUser
+     updateUser,deleteUser,assignRoleByEmail
 };

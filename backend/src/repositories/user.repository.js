@@ -111,4 +111,15 @@ const deleteUser = async (userId) => {
     return result.rows[0];
 };
 
-module.exports = {getAllUsers, getUserById,updateUser,deleteUser};
+const assignRoleByEmail = async (email, roleId) => {
+    const query = `
+        UPDATE users
+        SET role_id = $1, updated_at = NOW()
+        WHERE email = $2
+        RETURNING user_id, email, role_id;
+    `;
+    const result = await pool.query(query, [roleId, email]);
+    return result.rows[0];
+};
+
+module.exports = {getAllUsers, getUserById,updateUser,deleteUser,assignRoleByEmail};

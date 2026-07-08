@@ -11,7 +11,8 @@ const createProposal = async (req, res, next) => {
 
         const proposal =
             await proposalService.createProposal(
-                proposalData
+                proposalData,
+                req.user
             );
 
         return res.status(201).json({
@@ -31,7 +32,7 @@ const getAllProposals = async (req, res, next) => {
     try {
 
         const proposals =
-            await proposalService.getAllProposals();
+            await proposalService.getAllProposals(req.user);
 
         return res.status(200).json({
             success: true,
@@ -109,7 +110,7 @@ const approveProposal = async (req, res, next) => {
     try {
 
         const proposal =
-            await proposalService.approveProposal(req.params.id);
+            await proposalService.approveProposal(req.params.id, req.user);
 
         return res.status(200).json({
             success: true,

@@ -1,5 +1,5 @@
 const eventRepository = require("../repositories/event.repository");
-const ApiError = require("../utils/apiError");
+const ApiError = require("../utils/ApiError");
 
 const createEvent = async (data, userId) => {
 

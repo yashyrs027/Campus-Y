@@ -1,9 +1,11 @@
 const errorHandler = require("./middlewares/error.middleware");
 const express = require("express");
+const cors = require("cors");
 
 const app = express();
 
 // Middleware
+app.use(cors());
 app.use(express.json());
 
 // Import Routes
@@ -17,8 +19,8 @@ const registrationRoutes =
 require("./routes/registration.routes");
 const dashboardRoutes =
 require("./routes/dashboard.routes");
-
-
+const catalogRoutes = require("./routes/catalog.routes");
+const clubRoutes = require("./routes/club.routes");
 
 
 // Root Route
@@ -40,6 +42,8 @@ app.use("/api/proposals", proposalRoutes);
 app.use("/api/events",eventRoutes);
 app.use("/api",registrationRoutes);
 app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/catalog", catalogRoutes);
+app.use("/api/clubs", clubRoutes);
 
 app.use(errorHandler);
 module.exports = app;

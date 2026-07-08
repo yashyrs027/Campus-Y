@@ -1,0 +1,62 @@
+export const events = [
+  {
+    title: 'Annual Hackathon 2026',
+    club: 'Coding Club',
+    category: 'Workshop',
+    venue: 'Science Hall, Lab 304',
+    date: 'Oct 24, 09:00 AM',
+    seats: 12,
+    tone: 'tech',
+  },
+  {
+    title: 'Autumn Jazz Night',
+    club: 'Music Society',
+    category: 'Social',
+    venue: 'Student Commons Lounge',
+    date: 'Oct 28, 07:00 PM',
+    seats: 45,
+    tone: 'music',
+  },
+  {
+    title: 'Intramural Finals',
+    club: 'Athletics Dept',
+    category: 'Sports',
+    venue: 'Campus Sports Complex',
+    date: 'Nov 02, 02:00 PM',
+    seats: 5,
+    tone: 'sports',
+  },
+  {
+    title: 'Tech Career Expo',
+    club: 'Career Center',
+    category: 'Career',
+    venue: 'Main Atrium',
+    date: 'Nov 05, 10:00 AM',
+    seats: 150,
+    tone: 'career',
+  },
+  {
+    title: 'Visionary Voices Expo',
+    club: 'Fine Arts Guild',
+    category: 'Arts',
+    venue: 'Gallery B, Arts Wing',
+    date: 'Nov 12, 11:00 AM',
+    seats: 30,
+    tone: 'arts',
+  },
+  {
+    title: 'Leadership Summit',
+    club: 'Student Union',
+    category: 'Career',
+    venue: 'Innovation Theater',
+    date: 'Nov 15, 01:00 PM',
+    seats: 2,
+    tone: 'leadership',
+  },
+]
+
+export const activityRows = [
+  ['Tech Career Fair 2026', 'Oct 24', 'Career', 'Confirmed'],
+  ['Advanced Python Workshop', 'Oct 21', 'Workshop', 'Attended'],
+  ['Campus Ethics Symposium', 'Oct 28', 'Seminar', 'Pending'],
+]

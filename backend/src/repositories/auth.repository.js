@@ -165,5 +165,6 @@ module.exports = {
     createUser,
     findUserById,
     updateProfile,
+    findPasswordByUserId,
     updatePassword
 };

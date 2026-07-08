@@ -22,6 +22,13 @@ router.get(
     userController.getUserById
 );
 router.put(
+    "/assign-role",
+    authenticate,
+    authorize([ROLES.ADMIN]),
+    userController.assignRole
+);
+
+router.put(
     "/:id",
     authenticate,
     authorize([ROLES.ADMIN]),

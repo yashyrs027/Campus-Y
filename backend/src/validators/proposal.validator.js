@@ -17,7 +17,7 @@ const createProposalValidation = [
     body("end_date").isDate(),
 
     body("expected_participants")
-        .isInt({ min: 1 }),
+        .isInt({ min: 0 }),
 
     (req, res, next) => {
 

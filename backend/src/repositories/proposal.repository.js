@@ -13,11 +13,12 @@ const createProposal = async (proposalData) => {
             venue,
             start_date,
             end_date,
-            expected_participants
+            expected_participants,
+            status
         )
         VALUES
         (
-            $1,$2,$3,$4,$5,$6,$7,$8,$9
+            $1,$2,$3,$4,$5,$6,$7,$8,$9,COALESCE($10, 'Pending')::proposal_status_enum
         )
         RETURNING *;
     `;
@@ -31,7 +32,8 @@ const createProposal = async (proposalData) => {
         proposalData.venue,
         proposalData.start_date,
         proposalData.end_date,
-        proposalData.expected_participants
+        proposalData.expected_participants,
+        proposalData.status || null
     ];
 
     const result = await pool.query(query, values);
@@ -173,7 +175,51 @@ const rejectProposal = async (proposalId, rejectionReason) => {
     return result.rows[0];
 };
 
+const getProposalsByUserId = async (userId) => {
+    const query = `
+        SELECT
+            proposal_id,
+            club_id,
+            created_by,
+            category_id,
+            title,
+            description,
+            venue,
+            start_date,
+            end_date,
+            expected_participants,
+            status,
+            rejection_reason,
+            created_at
+        FROM event_proposals
+        WHERE created_by = $1
+        ORDER BY created_at DESC;
+    `;
+    const result = await pool.query(query, [userId]);
+    return result.rows;
+};
+const updateProposalStatus = async (proposalId, status) => {
+    const query = `
+        UPDATE event_proposals
+        SET
+            status = $1::proposal_status_enum,
+            rejection_reason = NULL,
+            updated_at = NOW()
+        WHERE proposal_id = $2
+        RETURNING *;
+    `;
+    const result = await pool.query(query, [status, proposalId]);
+    return result.rows[0];
+};
+
 module.exports = {
-    createProposal,getAllProposals,getProposalById,updateProposal,deleteProposal,approveProposal
-    ,rejectProposal
+    createProposal,
+    getAllProposals,
+    getProposalById,
+    updateProposal,
+    deleteProposal,
+    approveProposal,
+    rejectProposal,
+    getProposalsByUserId,
+    updateProposalStatus
 };

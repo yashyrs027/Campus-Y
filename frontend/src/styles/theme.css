@@ -1,0 +1,78 @@
+:root {
+  --surface: #faf8ff;
+  --surface-soft: #f2f3ff;
+  --surface-card: #ffffff;
+  --surface-blue: #e8f0ff;
+  --border: #d9deee;
+  --border-soft: #eef1f7;
+  --text: #131b2e;
+  --muted: #5e6475;
+  --muted-2: #7c8496;
+  --primary: #0053db;
+  --primary-strong: #004ac6;
+  --primary-soft: #dbe7ff;
+  --success: #0f9f6e;
+  --warning: #d98a11;
+  --danger: #c81e1e;
+  --shadow: 0 10px 24px rgb(19 27 46 / 0.08);
+  --shadow-soft: 0 4px 10px rgb(19 27 46 / 0.05);
+  --radius: 8px;
+  --radius-lg: 16px;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--text);
+  background: var(--surface);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--surface);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Hanken Grotesk", Inter, ui-sans-serif, system-ui, sans-serif;
+  letter-spacing: 0;
+}
+
+.icon {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}

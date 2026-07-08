@@ -25,8 +25,12 @@ const registerValidation = [
         .withMessage("Department is required"),
 
     body("role_id")
-        .notEmpty()
-        .withMessage("Role is required")
+        .custom((value) => Number(value) === 6)
+        .withMessage("Public registration is available for students only"),
+
+    body("gender")
+        .isIn(["Male", "Female", "Other"])
+        .withMessage("Gender is required")
 ];
 
 const loginValidation = [

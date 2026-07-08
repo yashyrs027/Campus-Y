@@ -104,7 +104,7 @@ const getClubDashboard = async (userId) => {
         my_events: Number(myEvents.total),
 
         student_registrations:
-            Number(dashboardRepository.getMyEventRegistrationCount.total)
+            Number(studentRegistrations.total)
 
     };
 

@@ -1,6 +1,6 @@
 const registrationRepository = require("../repositories/registration.repository");
 const eventRepository = require("../repositories/event.repository");
-const ApiError = require("../utils/apiError");
+const ApiError = require("../utils/ApiError");
 
 const registerEvent = async (eventId, studentId) => {
 
