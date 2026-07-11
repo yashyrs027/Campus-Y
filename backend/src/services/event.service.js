@@ -1,4 +1,5 @@
 const eventRepository = require("../repositories/event.repository");
+const { publishMissingApprovedEvents } = require("./proposal.service");
 const ApiError = require("../utils/ApiError");
 
 const createEvent = async (data, userId) => {
@@ -38,6 +39,7 @@ const createEvent = async (data, userId) => {
 };
 
 const getAllEvents = async () => {
+    await publishMissingApprovedEvents();
     return await eventRepository.getAllEvents();
 };
 const getEventById = async (eventId) => {

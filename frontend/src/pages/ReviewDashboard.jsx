@@ -34,8 +34,7 @@ function ReviewDashboard() {
 
   const canReview = (proposal) => {
     const roleId = Number(user?.role_id)
-    if (roleId === 1) return ['Pending', 'Under Faculty Review', 'Under HOD Review'].includes(proposal.status)
-    if (roleId === 3) return ['Pending', 'Under Faculty Review'].includes(proposal.status)
+    if (roleId === 3) return proposal.status === 'Under Faculty Review'
     if (roleId === 2) return proposal.status === 'Under HOD Review'
     return false
   }
@@ -65,8 +64,7 @@ function ReviewDashboard() {
     <DashboardLayout
       navItems={reviewerNav}
       role={roleLabels[user?.role_id] || 'Reviewer'}
-      sidebarSubtitle="Approval Workspace"
-      sidebarTitle="Campus-Y Review"
+      sidebarTitle="Campus-Y"
       user={user ? `${user.first_name} ${user.last_name}` : 'Reviewer'}
     >
       {status.message && <Notice tone={status.tone}>{status.message}</Notice>}
@@ -74,15 +72,15 @@ function ReviewDashboard() {
 
       <section className="section-heading">
         <div>
-          <h2>Proposal Review</h2>
+          <h2>Dashboard</h2>
           <p>Review the queue assigned to your approval level.</p>
         </div>
       </section>
 
       <section className="metrics-grid admin-metrics">
-        <MetricCard icon="check" label="Awaiting Your Review" note="Action required" value={pending} />
-        <MetricCard icon="calendar" label="Approved" note="Final approval" value={approved} />
-        <MetricCard icon="activity" label="Rejected" note="Recorded decisions" value={rejected} />
+        <MetricCard icon="check" label="Awaiting Your Review"  value={pending} />
+        <MetricCard icon="calendar" label="Approved"  value={approved} />
+        <MetricCard icon="activity" label="Rejected"  value={rejected} />
       </section>
 
       <section className="panel">

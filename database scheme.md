@@ -94,13 +94,17 @@
 | `title` | `varchar` |  |
 | `description` | `text` |  |
 | `venue` | `varchar` |  |
-| `start_date` | `date` |  |
-| `end_date` | `date` |  |
-| `expected_participants` | `int4` |  |
-| `status` | `proposal_status_enum` |  |
-| `rejection_reason` | `text` |  Nullable |
-| `created_at` | `timestamptz` |  |
-| `updated_at` | `timestamptz` |  |
+| `start_date` | `date` | NOT NULL |
+| `end_date` | `date` | NOT NULL, `end_date >= start_date` |
+| `start_time` | `time` | NOT NULL |
+| `end_time` | `time` | NOT NULL, `end_time > start_time` |
+| `registration_deadline` | `timestamp` | NOT NULL, `registration_deadline <= start_date + start_time` |
+| `expected_participants` | `int4` | NOT NULL, `> 0` |
+| `status` | `proposal_status_enum` | NOT NULL, default `Pending` |
+| `rejection_reason` | `text` | Nullable |
+| `rejected_by_role` | `int4` | Nullable |
+| `created_at` | `timestamptz` | NOT NULL |
+| `updated_at` | `timestamptz` | NOT NULL |
 
 ## Table `proposal_approvals`
 

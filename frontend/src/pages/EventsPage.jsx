@@ -6,7 +6,7 @@ import Notice from '../components/Notice'
 import SearchBar from '../components/SearchBar'
 import DashboardLayout from '../layouts/DashboardLayout'
 import { studentNav, clubNav, adminNav, reviewerNav } from '../data/navigation'
-import { api, getStoredUser, normalizeEvent, roleLabels } from '../lib/api'
+import { api, getSavedEventIds, getStoredUser, normalizeEvent, roleLabels, setSavedEventIds, sortEventsForDisplay } from '../lib/api'
 
 function EventsPage() {
   const navigate = useNavigate()
@@ -21,31 +21,29 @@ function EventsPage() {
   const [selectedClub, setSelectedClub] = useState('')
   
   // Saved events state (persisted in localStorage)
-  const [savedIds, setSavedIds] = useState(() => {
-    const raw = localStorage.getItem('campus_y_saved_events')
-    return raw ? JSON.parse(raw) : []
-  })
+  const [savedIds, setSavedIds] = useState(() => getSavedEventIds(user?.user_id))
 
   const [status, setStatus] = useState({ loading: true, message: '', tone: 'info' })
   const [registeringId, setRegisteringId] = useState(null)
+  const [enrolledIds, setEnrolledIds] = useState(new Set())
+  const isStudent = Number(user?.role_id) === 6
 
   // Dynamic Navigation menu config
   const navConfig = useMemo(() => {
-    if (!user) return { navItems: [], title: 'CampusPulse', subtitle: 'University Hub' }
+    if (!user) return { navItems: [], title: 'Campus-Y' }
     const roleId = Number(user.role_id)
     if (roleId === 1) {
-      return { navItems: adminNav, title: 'Admin Central', subtitle: 'University Portal' }
+      return { navItems: adminNav, title: 'Campus-Y' }
     } else if (roleId === 2 || roleId === 3) {
-      return { navItems: reviewerNav, title: 'Campus-Y Review', subtitle: 'Approval Workspace' }
+      return { navItems: reviewerNav, title: 'Campus-Y ' }
     } else if (roleId === 4 || roleId === 5) {
       return {
         navItems: clubNav,
-        title: 'Club Management',
-        subtitle: 'President Portal',
-        action: { label: 'New Proposal', icon: 'plus', to: '/proposal/new' },
+        title: 'Campus-Y',
+        // action: { label: 'New Proposal', icon: 'plus', to: '/proposal/new' },
       }
     } else {
-      return { navItems: studentNav, title: 'CampusPulse', subtitle: 'University Hub' }
+      return { navItems: studentNav, title: 'Campus-Y' }
     }
   }, [user])
 
@@ -55,20 +53,29 @@ function EventsPage() {
       return
     }
 
-    Promise.all([api.events(), api.catalog()])
-      .then(([eventsData, catalogData]) => {
+    const requests = [api.events(), api.catalog()]
+    if (isStudent) {
+      requests.push(api.myRegistrations())
+    }
+
+    Promise.all(requests)
+      .then((results) => {
+        const [eventsData, catalogData, registrationData] = results
         setEvents(eventsData.map(normalizeEvent))
         setCatalog(catalogData)
+        if (registrationData) {
+          setEnrolledIds(new Set(registrationData.map((item) => Number(item.event_id))))
+        }
         setStatus({ loading: false, message: '', tone: 'info' })
       })
       .catch((error) => {
         setStatus({ loading: false, message: error.message, tone: 'danger' })
       })
-  }, [navigate, user])
+  }, [navigate, user, isStudent])
 
   // Filter computation
   const filteredEvents = useMemo(() => {
-    return events.filter((event) => {
+    const filtered = events.filter((event) => {
       const matchesQuery = event.title?.toLowerCase().includes(query.toLowerCase())
       const matchesCategory = !selectedCategory || Number(event.category_id) === Number(selectedCategory)
       const matchesStatus = !selectedStatus || event.computedStatus === selectedStatus
@@ -76,6 +83,8 @@ function EventsPage() {
       
       return matchesQuery && matchesCategory && matchesStatus && matchesClub
     })
+
+    return sortEventsForDisplay(filtered)
   }, [events, query, selectedCategory, selectedStatus, selectedClub])
 
   const register = async (event) => {
@@ -83,6 +92,7 @@ function EventsPage() {
     setStatus({ loading: false, message: '', tone: 'info' })
     try {
       await api.registerForEvent(event.event_id)
+      setEnrolledIds((current) => new Set([...current, Number(event.event_id)]))
       setStatus({ loading: false, message: 'Registration successful.', tone: 'success' })
       
       // Reload events to update registrations / seats
@@ -96,12 +106,14 @@ function EventsPage() {
   }
 
   const toggleSave = (event) => {
+    if (!isStudent || !user?.user_id) return
+
     const eventId = Number(event.event_id)
     setSavedIds((current) => {
       const updated = current.includes(eventId)
         ? current.filter((id) => id !== eventId)
         : [...current, eventId]
-      localStorage.setItem('campus_y_saved_events', JSON.stringify(updated))
+      setSavedEventIds(user.user_id, updated)
       return updated
     })
   }
@@ -119,11 +131,11 @@ function EventsPage() {
       topbarTitle="Discover Events"
     >
       <section className="welcome-panel">
-        <h2>Discover Upcoming Activities</h2>
+        <h2>Discover Events</h2>
         <p>Explore current, upcoming, and completed college events, check seat availability, and manage your registrations.</p>
       </section>
 
-      <section className="filter-panel" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr 1fr', gap: '14px', alignItems: 'center' }}>
+      <section className="filter-panel" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', alignItems: 'center' }}>
         <SearchBar onChange={(event) => setQuery(event.target.value)} placeholder="Search by event title..." value={query} />
         
         <select
@@ -167,15 +179,16 @@ function EventsPage() {
         <Notice tone="info">No events match your criteria. Try adjusting the search query or filters.</Notice>
       )}
 
-      <section className="event-grid">
+      <section className="event-grid event-grid-horizontal">
         {filteredEvents.map((event) => (
           <EventCard
             event={event}
             key={event.event_id}
-            onRegister={Number(user?.role_id) === 6 && event.computedStatus !== 'Completed' ? register : undefined}
+            onRegister={isStudent && event.computedStatus !== 'Completed' ? register : undefined}
             registering={registeringId === event.event_id}
+            isEnrolled={enrolledIds.has(Number(event.event_id))}
             isSaved={savedIds.includes(Number(event.event_id))}
-            onToggleSave={toggleSave}
+            onToggleSave={isStudent ? toggleSave : undefined}
           />
         ))}
       </section>

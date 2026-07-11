@@ -1,7 +1,10 @@
+import { useNavigate } from 'react-router-dom'
 import Button from './Button'
 import Icon from './Icon'
 
-function EventCard({ event, onRegister, registering, isSaved, onToggleSave }) {
+function EventCard({ event, onRegister, registering, isSaved, onToggleSave, isEnrolled }) {
+  const navigate = useNavigate()
+  
   const getStatusColor = (status) => {
     if (status === 'Ongoing') return 'var(--success)'
     if (status === 'Upcoming') return 'var(--warning)'
@@ -9,22 +12,28 @@ function EventCard({ event, onRegister, registering, isSaved, onToggleSave }) {
   }
 
   return (
-    <article className="event-card">
+    <article 
+      className="event-card" 
+      onClick={() => navigate(`/events/${event.event_id}`)}
+      style={{ cursor: 'pointer' }}
+    >
       <div className={`event-art event-art-${event.tone}`}>
         <span className="chip chip-blue">{event.category}</span>
-        <button
-          className="icon-button"
-          type="button"
-          aria-label="Save event"
-          onClick={(e) => {
-            e.preventDefault()
-            e.stopPropagation()
-            onToggleSave?.(event)
-          }}
-          style={isSaved ? { background: 'var(--primary)', color: '#fff', borderColor: 'var(--primary)' } : {}}
-        >
-          <Icon name="bookmark" />
-        </button>
+        {onToggleSave && (
+          <button
+            className="icon-button"
+            type="button"
+            aria-label="Save event"
+            onClick={(e) => {
+              e.preventDefault()
+              e.stopPropagation()
+              onToggleSave(event)
+            }}
+            style={isSaved ? { background: 'var(--primary)', color: '#fff', borderColor: 'var(--primary)' } : {}}
+          >
+            <Icon name="bookmark" />
+          </button>
+        )}
       </div>
       <div className="event-card-body">
         <div className="club-line">
@@ -37,6 +46,10 @@ function EventCard({ event, onRegister, registering, isSaved, onToggleSave }) {
           {event.venue}
         </p>
         <p>
+          <Icon name="calendar" />
+          Register by: <strong>{event.registrationDeadline}</strong>
+        </p>
+        <p>
           <Icon name="activity" />
           <span>Status: </span>
           <strong style={{ color: getStatusColor(event.computedStatus) }}>
@@ -47,11 +60,19 @@ function EventCard({ event, onRegister, registering, isSaved, onToggleSave }) {
           <span className={event.seats <= 12 ? 'seat-warning' : 'seat-count'}>
             {event.capacity ? `${event.seats} seats left` : event.status || 'Open'}
           </span>
-          {onRegister && (
-            <Button disabled={registering} onClick={() => onRegister(event)}>
+          {isEnrolled ? (
+            <Button disabled variant="secondary">
+              Enrolled
+            </Button>
+          ) : event.registrationClosed ? (
+            <Button disabled variant="secondary">
+              Closed
+            </Button>
+          ) : onRegister ? (
+            <Button disabled={registering} onClick={(e) => { e.stopPropagation(); onRegister(event); }}>
               {registering ? 'Saving...' : 'Register'}
             </Button>
-          )}
+          ) : null}
         </div>
       </div>
     </article>

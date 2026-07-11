@@ -36,29 +36,44 @@ function ClubDashboard() {
     load()
   }, [navigate, user])
 
-  const renderTimeline = (proposalStatus) => {
-    // 4 stages: Submitted -> Faculty Review -> HOD Review -> Published
+  const renderTimeline = (proposal) => {
+    const proposalStatus = proposal.status
     const stages = [
-      { name: 'Submitted', key: 'submit', label: 'Proposal Submitted', state: 'done' },
-      { name: 'Faculty Approval', key: 'faculty', label: 'Faculty Coordinator Approval', state: 'upcoming' },
-      { name: 'HOD Approval', key: 'hod', label: 'HOD Approval', state: 'upcoming' },
-      { name: 'Published', key: 'publish', label: 'Event Published', state: 'upcoming' }
+      { name: 'Submitted', key: 'submit', state: 'done' },
+      { name: 'Faculty Review', key: 'faculty', state: 'upcoming' },
+      { name: 'HOD Review', key: 'hod', state: 'upcoming' },
+      { name: 'Admin Verification', key: 'admin', state: 'upcoming' },
+      { name: 'Published', key: 'publish', state: 'upcoming' },
     ]
 
-    if (proposalStatus === 'Pending' || proposalStatus === 'Under Faculty Review') {
-      stages[1].state = 'pending' // Faculty is currently reviewing
+    if (proposalStatus === 'Under Faculty Review') {
+      stages[1].state = 'pending'
     } else if (proposalStatus === 'Under HOD Review') {
       stages[1].state = 'done'
-      stages[2].state = 'pending' // HOD is currently reviewing
+      stages[2].state = 'pending'
+    } else if (proposalStatus === 'Pending') {
+      stages[1].state = 'done'
+      stages[2].state = 'done'
+      stages[3].state = 'pending'
     } else if (proposalStatus === 'Approved') {
       stages[1].state = 'done'
       stages[2].state = 'done'
-      stages[3].state = 'done' // Event is fully approved and published
+      stages[3].state = 'done'
+      stages[4].state = 'done'
     } else if (proposalStatus === 'Rejected') {
-      // Rejection could occur at HOD or Faculty level. 
-      // Let's assume it was rejected at HOD level if it reached HOD review, else Faculty.
-      stages[1].state = 'done'
-      stages[2].state = 'rejected'
+      const rejectedBy = Number(proposal.rejected_by_role)
+      if (rejectedBy === 3) {
+        stages[1].state = 'rejected'
+      } else if (rejectedBy === 2) {
+        stages[1].state = 'done'
+        stages[2].state = 'rejected'
+      } else if (rejectedBy === 1) {
+        stages[1].state = 'done'
+        stages[2].state = 'done'
+        stages[3].state = 'rejected'
+      } else {
+        stages[1].state = 'rejected'
+      }
     }
 
     return (
@@ -107,12 +122,12 @@ function ClubDashboard() {
 
   return (
     <DashboardLayout
-      sidebarTitle="Club Management"
-      sidebarSubtitle="President Portal"
+      sidebarTitle="Campus-Y"
+      
       navItems={clubNav}
       user={displayName}
       role={roleLabels[user?.role_id] || 'Club President'}
-      action={{ label: 'New Proposal', icon: 'plus', to: '/proposal/new' }}
+      // action={{ label: 'New Proposal', icon: 'plus', to: '/proposal/new' }}
       topbarTitle="Club Dashboard"
     >
       {status.message && <Notice tone={status.tone}>{status.message}</Notice>}
@@ -124,17 +139,17 @@ function ClubDashboard() {
       </section>
 
       <div className="metrics-grid">
-        <MetricCard icon="activity" label="Pending Proposals" value={dashboard?.proposal_status?.pending || 0} note="Awaiting review" />
-        <MetricCard icon="check" label="Approved Proposals" value={dashboard?.proposal_status?.approved || 0} note="Ready/Active" />
-        <MetricCard icon="activity" label="Rejected Proposals" value={dashboard?.proposal_status?.rejected || 0} note="Revisions needed" />
-        <MetricCard icon="users" label="Total Participants" value={dashboard?.student_registrations || 0} note="Enrolled in events" />
+        <MetricCard icon="activity" label="Pending Proposals" value={dashboard?.proposal_status?.pending || 0}  />
+        <MetricCard icon="check" label="Approved Proposals" value={dashboard?.proposal_status?.approved || 0} />
+        <MetricCard icon="activity" label="Rejected Proposals" value={dashboard?.proposal_status?.rejected || 0}  />
+        <MetricCard icon="users" label="Total Participants" value={dashboard?.student_registrations || 0}  />
       </div>
 
       <div className="student-grid" style={{ gridTemplateColumns: '1fr' }}>
         <section className="panel">
           <div className="panel-heading">
             <h3>Recent Event Proposals</h3>
-            <Button to="/proposal/new" icon="plus">Submit New</Button>
+            {/* <Button to="/proposal/new" icon="plus">Submit New</Button> */}
           </div>
 
           <div style={{ display: 'grid', gap: '20px' }}>
@@ -147,7 +162,7 @@ function ClubDashboard() {
                       Venue: <strong>{proposal.venue}</strong> | Category ID: <strong>{proposal.category_id}</strong>
                     </p>
                     <p style={{ margin: 0, fontSize: '14px', color: 'var(--muted)' }}>
-                      Expected Participants: <strong>{Number(proposal.expected_participants) === 0 ? 'Open to All' : proposal.expected_participants}</strong>
+                      Expected Participants: <strong>{proposal.expected_participants}</strong>
                     </p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
@@ -162,7 +177,7 @@ function ClubDashboard() {
                     </small>
                   </div>
                 </div>
-                {renderTimeline(proposal.status)}
+                {renderTimeline(proposal)}
                 {proposal.status === 'Rejected' && proposal.rejection_reason && (
                   <div style={{ background: '#fee2e2', borderLeft: '4px solid var(--danger)', padding: '10px 14px', borderRadius: '4px', marginTop: '12px' }}>
                     <strong style={{ color: '#991b1b', fontSize: '13px', display: 'block' }}>Rejection Reason:</strong>

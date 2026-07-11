@@ -19,20 +19,20 @@ function ClubProfilePage() {
 
   // Dynamic Navigation menu config
   const navConfig = useMemo(() => {
-    if (!user) return { navItems: [], title: 'CampusPulse', subtitle: 'University Hub' }
+    if (!user) return { navItems: [], title: 'Campus-Y',  }
     const roleId = Number(user.role_id)
     if (roleId === 1) {
-      return { navItems: adminNav, title: 'Admin Central', subtitle: 'University Portal' }
+      return { navItems: adminNav, title: 'Campus-Y' }
     } else if (roleId === 2 || roleId === 3) {
-      return { navItems: reviewerNav, title: 'Campus-Y Review', subtitle: 'Approval Workspace' }
+      return { navItems: reviewerNav, title: 'Campus-Y ' }
     } else if (roleId === 4 || roleId === 5) {
       return {
         navItems: clubNav,
-        title: 'Club Management',
-        subtitle: 'President Portal',
+        title: 'Campus-Y',
+        
       }
     } else {
-      return { navItems: studentNav, title: 'CampusPulse', subtitle: 'University Hub' }
+      return { navItems: studentNav, title: 'Campus-Y' }
     }
   }, [user])
 
@@ -82,7 +82,7 @@ function ClubProfilePage() {
       {status.loading && <Notice>Loading club directory...</Notice>}
 
       <section className="welcome-panel">
-        <h2>University Clubs & Chapters</h2>
+        <h2>Discover Clubs</h2>
         <p>Browse active clubs, view their organized activities, and track attendance levels.</p>
       </section>
 
@@ -144,9 +144,9 @@ function ClubProfilePage() {
               <p style={{ color: 'var(--muted)', fontSize: '15px', marginTop: '8px', lineHeight: '1.6' }}>{selectedClub.description}</p>
             </div>
 
-            <div className="metrics-grid" style={{ gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', marginBottom: '28px' }}>
-              <MetricCard icon="calendar" label="Total Events Organized" value={clubStats.eventsCount} note="All time" />
-              <MetricCard icon="users" label="Total Enrolled Students" value={clubStats.totalEnrolled} note="Participants total" />
+            <div className="metrics-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', marginBottom: '28px' }}>
+              <MetricCard icon="calendar" label="Total Events Organized" value={clubStats.eventsCount}  />
+              <MetricCard icon="users" label="Total Enrolled Students" value={clubStats.totalEnrolled}  />
             </div>
 
             <div>

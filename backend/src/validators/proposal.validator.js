@@ -16,8 +16,19 @@ const createProposalValidation = [
 
     body("end_date").isDate(),
 
+    body("start_time")
+        .matches(/^([01]\d|2[0-3]):[0-5]\d$/)
+        .withMessage("Start time must be in HH:MM format"),
+
+    body("end_time")
+        .matches(/^([01]\d|2[0-3]):[0-5]\d$/)
+        .withMessage("End time must be in HH:MM format"),
+
+    body("registration_deadline").isISO8601(),
+
     body("expected_participants")
-        .isInt({ min: 0 }),
+        .isInt({ min: 1 })
+        .withMessage("Expected participants must be greater than 0"),
 
     (req, res, next) => {
 

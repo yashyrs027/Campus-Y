@@ -32,21 +32,20 @@ function ProfilePage() {
 
   // Determine navigation menu and titles dynamically based on role
   const navConfig = useMemo(() => {
-    if (!user) return { navItems: [], title: 'Campus-Y', subtitle: 'Portal' }
+    if (!user) return { navItems: [], title: 'Campus-Y'}
     const roleId = Number(user.role_id)
     if (roleId === 1) {
-      return { navItems: adminNav, title: 'Admin Central', subtitle: 'University Portal' }
+      return { navItems: adminNav, title: 'Campus-Y' }
     } else if (roleId === 2 || roleId === 3) {
-      return { navItems: reviewerNav, title: 'Campus-Y Review', subtitle: 'Approval Workspace' }
+      return { navItems: reviewerNav, title: 'Campus-Y' }
     } else if (roleId === 4 || roleId === 5) {
       return {
         navItems: clubNav,
-        title: 'Club Management',
-        subtitle: 'President Portal',
-        action: { label: 'New Proposal', icon: 'plus', to: '/proposal/new' },
+        title: 'Campus-Y',
+        // action: { label: 'New Proposal', icon: 'plus', to: '/proposal/new' },
       }
     } else {
-      return { navItems: studentNav, title: 'Campus-Y', subtitle: 'Student Portal' }
+      return { navItems: studentNav, title: 'Campus-Y' }
     }
   }, [user])
 
@@ -165,7 +164,7 @@ function ProfilePage() {
       role={roleLabels[profile.role_id] || 'Member'}
     >
       <section className="welcome-panel">
-        <h2>Manage Profile Settings</h2>
+        <h2>Profile Settings</h2>
         <p>Keep your user information up to date and manage your account security.</p>
       </section>
 
@@ -241,7 +240,7 @@ function ProfilePage() {
           </form>
         </div>
 
-        <aside className="proposal-side">
+        {/* <aside className="proposal-side"> */}
           <div className="panel">
             <h3><Icon name="settings" /> Change Password</h3>
             <p style={{ color: 'var(--muted)', marginBottom: '20px', fontSize: '14px' }}>
@@ -289,7 +288,7 @@ function ProfilePage() {
               </Button>
             </form>
           </div>
-        </aside>
+        {/* </aside> */}
       </div>
     </DashboardLayout>
   )

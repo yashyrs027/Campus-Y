@@ -105,8 +105,7 @@ function ManageClubsPage() {
 
   return (
     <DashboardLayout
-      sidebarTitle="Admin Central"
-      sidebarSubtitle="University Portal"
+      sidebarTitle="Campus-Y"
       navItems={adminNav}
       topbarTitle="Manage Clubs"
       user={displayName}
@@ -122,7 +121,7 @@ function ManageClubsPage() {
         </div>
       </section>
 
-      <div className="proposal-grid" style={{ gridTemplateColumns: '1.2fr 0.8fr', gap: '24px' }}>
+      <div className="proposal-grid" style={{ gap: '24px' }}>
         {/* Clubs Directory Table */}
         <div className="panel">
           <h3>Registered Clubs Directory</h3>
@@ -171,6 +170,7 @@ function ManageClubsPage() {
           <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '20px', marginTop: '16px' }}>
             <label>
               <span>Club Name</span>
+              <br />
               <input
                 name="club_name"
                 onChange={updateField}
@@ -199,7 +199,7 @@ function ManageClubsPage() {
                 onChange={updateField}
                 placeholder="Brief summary of the club's focus and activities..."
                 value={form.description}
-                style={{ height: '100px' }}
+                style={{ height: '100px', width: '100%' }}
               />
             </label>
 

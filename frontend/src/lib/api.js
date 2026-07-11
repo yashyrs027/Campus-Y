@@ -73,6 +73,7 @@ export const api = {
   logout: () => request('/api/auth/logout', { method: 'POST' }),
   catalog: () => request('/api/catalog'),
   events: () => request('/api/events'),
+  event: (id) => request(`/api/events/${id}`),
   registerForEvent: (eventId) => request(`/api/events/${eventId}/register`, { method: 'POST' }),
   myRegistrations: () => request('/api/registrations/my'),
   adminDashboard: () => request('/api/dashboard/admin'),
@@ -88,6 +89,8 @@ export const api = {
   clubs: () => request('/api/clubs'),
   createClub: (body) => request('/api/clubs', { method: 'POST', body: JSON.stringify(body) }),
   updateClub: (id, body) => request(`/api/clubs/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+  registrationReportEvents: () => request('/api/reports/events'),
+  eventRegistrationReport: (eventId) => request(`/api/reports/events/${eventId}/registrations`),
 }
 
 export function formatDateTime(value) {
@@ -98,27 +101,103 @@ export function formatDateTime(value) {
   }).format(new Date(value))
 }
 
+export function getEventComputedStatus(startDatetime, endDatetime, now = new Date()) {
+  const start = new Date(startDatetime)
+  const end = new Date(endDatetime)
+
+  if (now >= start && now <= end) return 'Ongoing'
+  if (now > end) return 'Completed'
+  return 'Upcoming'
+}
+
+export function isRegistrationClosed(event, now = new Date()) {
+  if (event.computedStatus === 'Completed') return true
+
+  if (event.registration_deadline) {
+    return new Date(event.registration_deadline).getTime() < now.getTime()
+  }
+
+  return false
+}
+
+const SAVED_EVENTS_PREFIX = 'campus_y_saved_events'
+
+export function getSavedEventsStorageKey(userId) {
+  return `${SAVED_EVENTS_PREFIX}_${userId}`
+}
+
+export function getSavedEventIds(userId) {
+  if (!userId) return []
+
+  const userKey = getSavedEventsStorageKey(userId)
+  const raw = localStorage.getItem(userKey)
+  if (raw) {
+    return JSON.parse(raw)
+  }
+
+  const legacyRaw = localStorage.getItem(SAVED_EVENTS_PREFIX)
+  if (legacyRaw) {
+    const legacyIds = JSON.parse(legacyRaw)
+    localStorage.setItem(userKey, legacyRaw)
+    localStorage.removeItem(SAVED_EVENTS_PREFIX)
+    return legacyIds
+  }
+
+  return []
+}
+
+export function setSavedEventIds(userId, ids) {
+  if (!userId) return
+  localStorage.setItem(getSavedEventsStorageKey(userId), JSON.stringify(ids))
+}
+
+export function normalizeRegistration(registration) {
+  const eventStatus = getEventComputedStatus(
+    registration.start_datetime,
+    registration.end_datetime
+  )
+
+  return {
+    ...registration,
+    eventStatus,
+  }
+}
+
+export function sortEventsForDisplay(events) {
+  const statusOrder = { Ongoing: 0, Upcoming: 1, Completed: 2 }
+
+  return [...events].sort((a, b) => {
+    const statusDiff = (statusOrder[a.computedStatus] ?? 1) - (statusOrder[b.computedStatus] ?? 1)
+    if (statusDiff !== 0) return statusDiff
+
+    if (a.computedStatus === 'Completed') {
+      return new Date(b.end_datetime || b.start_datetime) - new Date(a.end_datetime || a.start_datetime)
+    }
+
+    return new Date(a.start_datetime) - new Date(b.start_datetime)
+  })
+}
+
 export function normalizeEvent(event) {
   const registered = Number(event.registered || 0)
   const capacity = Number(event.capacity || 0)
   const seats = capacity > 0 ? Math.max(capacity - registered, 0) : 0
 
   const now = new Date()
-  const start = new Date(event.start_datetime)
-  const end = new Date(event.end_datetime)
-  let computedStatus = 'Upcoming'
-  if (now >= start && now <= end) {
-    computedStatus = 'Ongoing'
-  } else if (now > end) {
-    computedStatus = 'Completed'
-  }
+  const computedStatus = getEventComputedStatus(event.start_datetime, event.end_datetime, now)
+  const registrationClosed = isRegistrationClosed(
+    { ...event, computedStatus },
+    now
+  )
 
   return {
     ...event,
     category: event.category_name || event.category || `Category ${event.category_id || 'General'}`,
     club: event.club_name || event.club || `Organizer #${event.created_by || 'Campus-Y'}`,
     date: formatDateTime(event.start_datetime),
+    registrationDeadline: formatDateTime(event.registration_deadline),
     computedStatus,
+    registrationClosed,
     seats,
     tone: ['music', 'sports', 'career', 'arts', 'leadership'][Number(event.event_id || 0) % 5],
   }

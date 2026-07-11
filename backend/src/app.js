@@ -21,6 +21,7 @@ const dashboardRoutes =
 require("./routes/dashboard.routes");
 const catalogRoutes = require("./routes/catalog.routes");
 const clubRoutes = require("./routes/club.routes");
+const reportRoutes = require("./routes/report.routes");
 
 
 // Root Route
@@ -44,6 +45,7 @@ app.use("/api",registrationRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/catalog", catalogRoutes);
 app.use("/api/clubs", clubRoutes);
+app.use("/api/reports", reportRoutes);
 
 app.use(errorHandler);
 module.exports = app;

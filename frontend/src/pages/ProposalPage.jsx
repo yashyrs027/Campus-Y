@@ -5,7 +5,7 @@ import Icon from '../components/Icon'
 import Notice from '../components/Notice'
 import DashboardLayout from '../layouts/DashboardLayout'
 import { studentNav, clubNav, adminNav, reviewerNav } from '../data/navigation'
-import { api, getStoredUser, roleLabels } from '../lib/api'
+import { api, formatDateTime, getStoredUser, roleLabels } from '../lib/api'
 
 function ProposalPage() {
   const navigate = useNavigate()
@@ -13,21 +13,20 @@ function ProposalPage() {
   
   // Dynamic Navigation menu config
   const navConfig = useMemo(() => {
-    if (!user) return { navItems: [], title: 'CampusPulse', subtitle: 'University Hub' }
+    if (!user) return { navItems: [], title: 'Campus-Y' }
     const roleId = Number(user.role_id)
     if (roleId === 1) {
-      return { navItems: adminNav, title: 'Admin Central', subtitle: 'University Portal' }
+      return { navItems: adminNav, title: 'Campus-Y' }
     } else if (roleId === 2 || roleId === 3) {
-      return { navItems: reviewerNav, title: 'Campus-Y Review', subtitle: 'Approval Workspace' }
+      return { navItems: reviewerNav, title: 'Campus-Y ' }
     } else if (roleId === 4 || roleId === 5) {
       return {
         navItems: clubNav,
-        title: 'Club Management',
-        subtitle: 'President Portal',
-        action: { label: 'New Proposal', icon: 'plus', to: '/proposal/new' },
+        title: 'Campus-Y',
+        // action: { label: 'New Proposal', icon: 'plus', to: '/proposal/new' },
       }
     } else {
-      return { navItems: studentNav, title: 'CampusPulse', subtitle: 'University Hub' }
+      return { navItems: studentNav, title: 'Campus-Y' }
     }
   }, [user])
 
@@ -40,6 +39,9 @@ function ProposalPage() {
     venue: '',
     start_date: '',
     end_date: '',
+    start_time: '',
+    end_time: '',
+    registration_deadline: '',
     expected_participants: '',
   })
   
@@ -70,10 +72,47 @@ function ProposalPage() {
   }
 
   const isStep2Valid = () => {
+    const val = Number(form.expected_participants.trim())
     return form.venue.trim() !== '' &&
       form.start_date !== '' &&
       form.end_date !== '' &&
-      form.expected_participants.trim() !== ''
+      form.start_time !== '' &&
+      form.end_time !== '' &&
+      form.registration_deadline !== '' &&
+      form.expected_participants.trim() !== '' &&
+      !isNaN(val) &&
+      val > 0
+  }
+
+  const getEventStartDateTime = () => new Date(`${form.start_date}T${form.start_time}`)
+  const getEventEndDateTime = () => new Date(`${form.end_date}T${form.end_time}`)
+
+  const validateSchedule = () => {
+    if (form.end_date < form.start_date) {
+      return 'End date cannot be before start date.'
+    }
+
+    if (form.end_time <= form.start_time) {
+      return 'End time must be after start time.'
+    }
+
+    const eventStart = getEventStartDateTime()
+    const eventEnd = getEventEndDateTime()
+    const registrationDeadline = new Date(form.registration_deadline)
+
+    if (Number.isNaN(eventStart.getTime()) || Number.isNaN(eventEnd.getTime()) || Number.isNaN(registrationDeadline.getTime())) {
+      return 'Please enter valid event dates, times, and registration deadline.'
+    }
+
+    if (eventEnd <= eventStart) {
+      return 'Event end must be after event start.'
+    }
+
+    if (registrationDeadline.getTime() > eventStart.getTime()) {
+      return 'Registration deadline must be on or before the event start time.'
+    }
+
+    return null
   }
 
   const handleNext = () => {
@@ -81,15 +120,25 @@ function ProposalPage() {
       setStatus({ loading: false, message: 'Please fill in all Basic Information fields before continuing.', tone: 'danger' })
       return
     }
-    if (step === 2 && !isStep2Valid()) {
-      setStatus({ loading: false, message: 'Please fill in all Event Details fields before continuing.', tone: 'danger' })
-      return
+    if (step === 2) {
+      if (!isStep2Valid()) {
+        const val = Number(form.expected_participants.trim())
+        const isNumValid = form.expected_participants.trim() !== '' && !isNaN(val) && val > 0
+        if (!isNumValid) {
+          setStatus({ loading: false, message: 'Expected participants must be a positive number.', tone: 'danger' })
+        } else {
+          setStatus({ loading: false, message: 'Please fill in all Event Details fields before continuing.', tone: 'danger' })
+        }
+        return
+      }
     }
     
-    // Check end date is after start date
-    if (step === 2 && new Date(form.end_date) < new Date(form.start_date)) {
-      setStatus({ loading: false, message: 'End date cannot be earlier than start date.', tone: 'danger' })
-      return
+    if (step === 2) {
+      const scheduleError = validateSchedule()
+      if (scheduleError) {
+        setStatus({ loading: false, message: scheduleError, tone: 'danger' })
+        return
+      }
     }
 
     setStatus({ loading: false, message: '', tone: 'info' })
@@ -106,18 +155,21 @@ function ProposalPage() {
     setStatus({ loading: true, message: '', tone: 'info' })
     
     // Parse expected participants
-    const rawVal = form.expected_participants.trim().toLowerCase()
-    let parsedParticipants = 0
-    if (rawVal !== 'open to all' && rawVal !== 'open' && rawVal !== 'all' && !isNaN(Number(rawVal))) {
-      parsedParticipants = Math.max(0, parseInt(rawVal, 10))
-    }
+    const parsedParticipants = Math.max(1, parseInt(form.expected_participants.trim(), 10) || 0)
 
     try {
+      const scheduleError = validateSchedule()
+      if (scheduleError) {
+        setStatus({ loading: false, message: scheduleError, tone: 'danger' })
+        return
+      }
+
       await api.createProposal({
         ...form,
         club_id: Number(form.club_id),
         category_id: Number(form.category_id),
         expected_participants: parsedParticipants,
+        registration_deadline: new Date(form.registration_deadline).toISOString(),
       })
       
       setForm({
@@ -128,6 +180,9 @@ function ProposalPage() {
         venue: '',
         start_date: '',
         end_date: '',
+        start_time: '',
+        end_time: '',
+        registration_deadline: '',
         expected_participants: '',
       })
       
@@ -159,7 +214,6 @@ function ProposalPage() {
     >
       <section className="proposal-heading">
         <div>
-          <p>Dashboard / Event Proposals / New Proposal</p>
           <h2>Create Event Proposal</h2>
         </div>
       </section>
@@ -186,7 +240,7 @@ function ProposalPage() {
         })}
       </section>
 
-      <div className="proposal-grid">
+      <div style={{ width: '100%' }}>
         <div className="panel">
           {step === 1 && (
             <form onSubmit={(e) => { e.preventDefault(); handleNext(); }} className="proposal-form" style={{ display: 'grid', gap: '24px' }}>
@@ -277,18 +331,59 @@ function ProposalPage() {
                 </label>
               </div>
 
+              <div className="form-row">
+                <label>
+                  <span>Starting Time</span>
+                  <input
+                    name="start_time"
+                    onChange={updateField}
+                    required
+                    type="time"
+                    value={form.start_time}
+                  />
+                </label>
+                <label>
+                  <span>Ending Time</span>
+                  <input
+                    name="end_time"
+                    onChange={updateField}
+                    required
+                    type="time"
+                    value={form.end_time}
+                  />
+                </label>
+                <small style={{ color: 'var(--muted)', marginTop: '-8px' }}>
+                  End time must be later than start time (same rule as the database).
+                </small>
+              </div>
+
+              <label>
+                <span>Registration Deadline</span>
+                <input
+                  name="registration_deadline"
+                  onChange={updateField}
+                  required
+                  type="datetime-local"
+                  value={form.registration_deadline}
+                />
+                <small style={{ color: 'var(--muted)', marginTop: '-8px' }}>
+                  Last date and time students can register for this event.
+                </small>
+              </label>
+
               <label>
                 <span>Expected Participants</span>
                 <input
                   name="expected_participants"
                   onChange={updateField}
-                  placeholder="e.g. 150 or Open to All"
+                  placeholder="e.g. 150"
                   required
-                  type="text"
+                  type="number"
+                  min="1"
                   value={form.expected_participants}
                 />
                 <small style={{ color: 'var(--muted)', marginTop: '-8px' }}>
-                  Enter a number (e.g. 100) or write <strong>Open to All</strong> for open participation.
+                  Enter the expected number of participants (positive number).
                 </small>
               </label>
 
@@ -327,11 +422,17 @@ function ProposalPage() {
                     <td>{form.start_date} to {form.end_date}</td>
                   </tr>
                   <tr>
+                    <td style={{ fontWeight: 'bold' }}>Time</td>
+                    <td>{form.start_time} to {form.end_time}</td>
+                  </tr>
+                  <tr>
+                    <td style={{ fontWeight: 'bold' }}>Registration Deadline</td>
+                    <td>{formatDateTime(form.registration_deadline)}</td>
+                  </tr>
+                  <tr>
                     <td style={{ fontWeight: 'bold' }}>Expected Participants</td>
                     <td>
-                      {['open to all', 'open', 'all'].includes(form.expected_participants.trim().toLowerCase()) || isNaN(Number(form.expected_participants.trim()))
-                        ? 'Open to All'
-                        : form.expected_participants}
+                      {form.expected_participants}
                     </td>
                   </tr>
                   <tr>
@@ -366,21 +467,6 @@ function ProposalPage() {
             </div>
           )}
         </div>
-
-        <aside className="proposal-side">
-          <section className="panel upload-panel">
-            <h3><Icon name="upload" /> Event Banner</h3>
-            <div>
-              <Icon name="upload" />
-              <strong>Drag and drop banner</strong>
-              <span>JPG, PNG, or GIF up to 5MB</span>
-            </div>
-          </section>
-          <section className="panel tip-panel">
-            <h3>President's Tip</h3>
-            <p>Proposals with a detailed budget and at least two weeks lead time have a higher approval rate.</p>
-          </section>
-        </aside>
       </div>
     </DashboardLayout>
   )

@@ -4,7 +4,7 @@ import SearchBar from './SearchBar'
 function Topbar({ title, user = 'Alex Rivera', role = 'Student' }) {
   return (
     <header className="topbar">
-      {title && <h1>{title}</h1>}
+      {/* {title && <h1>{title}</h1>} */}
       <SearchBar />
       <div className="topbar-actions">
         <Link to="/profile" className="user-pill" style={{ textDecoration: 'none', color: 'inherit' }}>

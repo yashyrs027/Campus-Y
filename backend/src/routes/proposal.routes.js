@@ -23,6 +23,7 @@ router.post(
     authenticate,
     authorize([
         ROLES.CLUB_COORDINATOR,
+        ROLES.VICE_PRESIDENT,
         ROLES.ADMIN
     ]),
     createProposalValidation,
@@ -35,7 +36,8 @@ router.get(
         ROLES.ADMIN,
         ROLES.FACULTY,
         ROLES.HOD,
-        ROLES.CLUB_COORDINATOR
+        ROLES.CLUB_COORDINATOR,
+        ROLES.VICE_PRESIDENT
     ]),
     proposalController.getAllProposals
 );
@@ -46,7 +48,8 @@ router.get(
     authorize([
         ROLES.ADMIN,
         ROLES.FACULTY,
-        ROLES.CLUB_COORDINATOR
+        ROLES.CLUB_COORDINATOR,
+        ROLES.VICE_PRESIDENT
     ]),
     proposalController.getProposalById
 );
@@ -54,14 +57,20 @@ router.get(
 router.put(
     "/:id",
     authenticate,
-    authorize([ROLES.CLUB_COORDINATOR]),
+    authorize([
+        ROLES.CLUB_COORDINATOR,
+        ROLES.VICE_PRESIDENT
+    ]),
     proposalController.updateProposal
 );
 
 router.delete(
     "/:id",
     authenticate,
-    authorize([ROLES.CLUB_COORDINATOR]),
+    authorize([
+        ROLES.CLUB_COORDINATOR,
+        ROLES.VICE_PRESIDENT
+    ]),
     proposalController.deleteProposal
 );
 

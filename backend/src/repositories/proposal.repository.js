@@ -13,12 +13,15 @@ const createProposal = async (proposalData) => {
             venue,
             start_date,
             end_date,
+            start_time,
+            end_time,
+            registration_deadline,
             expected_participants,
             status
         )
         VALUES
         (
-            $1,$2,$3,$4,$5,$6,$7,$8,$9,COALESCE($10, 'Pending')::proposal_status_enum
+            $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,COALESCE($13, 'Pending')::proposal_status_enum
         )
         RETURNING *;
     `;
@@ -32,6 +35,9 @@ const createProposal = async (proposalData) => {
         proposalData.venue,
         proposalData.start_date,
         proposalData.end_date,
+        proposalData.start_time,
+        proposalData.end_time,
+        proposalData.registration_deadline,
         proposalData.expected_participants,
         proposalData.status || null
     ];
@@ -54,8 +60,13 @@ const getAllProposals = async () => {
             venue,
             start_date,
             end_date,
+            start_time,
+            end_time,
+            registration_deadline,
             expected_participants,
             status,
+            rejection_reason,
+            rejected_by_role,
             created_at
         FROM event_proposals
         ORDER BY created_at DESC;
@@ -78,9 +89,13 @@ const getProposalById = async (proposalId) => {
             venue,
             start_date,
             end_date,
+            start_time,
+            end_time,
+            registration_deadline,
             expected_participants,
             status,
             rejection_reason,
+            rejected_by_role,
             created_at,
             updated_at
         FROM event_proposals
@@ -103,9 +118,12 @@ const updateProposal = async (proposalId, proposalData) => {
             venue = $5,
             start_date = $6,
             end_date = $7,
-            expected_participants = $8,
+            start_time = $8,
+            end_time = $9,
+            registration_deadline = $10,
+            expected_participants = $11,
             updated_at = NOW()
-        WHERE proposal_id = $9
+        WHERE proposal_id = $12
         RETURNING *;
     `;
 
@@ -117,6 +135,9 @@ const updateProposal = async (proposalId, proposalData) => {
         proposalData.venue,
         proposalData.start_date,
         proposalData.end_date,
+        proposalData.start_time,
+        proposalData.end_time,
+        proposalData.registration_deadline,
         proposalData.expected_participants,
         proposalId
     ];
@@ -155,20 +176,22 @@ const approveProposal = async (proposalId) => {
     return result.rows[0];
 };
 
-const rejectProposal = async (proposalId, rejectionReason) => {
+const rejectProposal = async (proposalId, rejectionReason, rejectedByRole) => {
 
     const query = `
         UPDATE event_proposals
         SET
             status = 'Rejected',
             rejection_reason = $1,
+            rejected_by_role = $2,
             updated_at = NOW()
-        WHERE proposal_id = $2
+        WHERE proposal_id = $3
         RETURNING *;
     `;
 
     const result = await pool.query(query, [
         rejectionReason,
+        rejectedByRole,
         proposalId
     ]);
 
@@ -187,9 +210,13 @@ const getProposalsByUserId = async (userId) => {
             venue,
             start_date,
             end_date,
+            start_time,
+            end_time,
+            registration_deadline,
             expected_participants,
             status,
             rejection_reason,
+            rejected_by_role,
             created_at
         FROM event_proposals
         WHERE created_by = $1
@@ -212,6 +239,37 @@ const updateProposalStatus = async (proposalId, status) => {
     return result.rows[0];
 };
 
+const getApprovedProposalsWithoutEvents = async () => {
+    const query = `
+        SELECT
+            p.proposal_id,
+            p.club_id,
+            p.created_by,
+            p.category_id,
+            p.title,
+            p.description,
+            p.venue,
+            p.start_date,
+            p.end_date,
+            p.start_time,
+            p.end_time,
+            p.registration_deadline,
+            p.expected_participants,
+            p.status,
+            p.rejection_reason,
+            p.rejected_by_role,
+            p.created_at
+        FROM event_proposals p
+        LEFT JOIN events e ON e.proposal_id = p.proposal_id
+        WHERE p.status = 'Approved'
+          AND e.event_id IS NULL
+        ORDER BY p.created_at DESC;
+    `;
+
+    const result = await pool.query(query);
+    return result.rows;
+};
+
 module.exports = {
     createProposal,
     getAllProposals,
@@ -221,5 +279,6 @@ module.exports = {
     approveProposal,
     rejectProposal,
     getProposalsByUserId,
-    updateProposalStatus
+    updateProposalStatus,
+    getApprovedProposalsWithoutEvents
 };

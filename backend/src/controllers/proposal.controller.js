@@ -130,7 +130,8 @@ const rejectProposal = async (req, res, next) => {
         const proposal =
             await proposalService.rejectProposal(
                 req.params.id,
-                req.body.rejection_reason
+                req.body.rejection_reason,
+                req.user
             );
 
         return res.status(200).json({

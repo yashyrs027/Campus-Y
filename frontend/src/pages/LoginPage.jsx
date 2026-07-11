@@ -68,7 +68,7 @@ function LoginPage() {
 
   return (
     <main className="login-page">
-      <section className="login-art">
+      {/* <section className="login-art">
         <div className="campus-illustration">
           <span />
           <span />
@@ -76,7 +76,7 @@ function LoginPage() {
         </div>
         <h1>The pulse of <strong>Campus Life.</strong></h1>
         <p>Join the most active student ecosystem to discover clubs, manage schedules, and coordinate with faculty.</p>
-      </section>
+      </section> */}
 
       <form className="login-card" onSubmit={submit}>
         <Brand />
@@ -157,7 +157,7 @@ function LoginPage() {
           {status.loading ? 'Working...' : mode === 'login' ? 'Sign In to Campus-Y' : 'Create and Sign In'}
         </Button>
         <button className="google-button" type="button">
-          <Icon name="building" />
+          <Icon name="google" />
           Continue with Google
         </button>
         <p className="auth-link">

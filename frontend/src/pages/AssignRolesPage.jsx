@@ -64,8 +64,8 @@ function AssignRolesPage() {
 
   return (
     <DashboardLayout
-      sidebarTitle="Admin Central"
-      sidebarSubtitle="University Portal"
+      sidebarTitle="Campus-Y"
+      
       navItems={adminNav}
       topbarTitle="Assign Roles"
       user={displayName}
@@ -81,7 +81,7 @@ function AssignRolesPage() {
         </div>
       </section>
 
-      <div className="proposal-grid" style={{ gridTemplateColumns: '1.2fr 0.8fr', gap: '24px' }}>
+      <div className="proposal-grid" style={{ gap: '24px' }}>
         {/* Users registry list */}
         <div className="panel">
           <h3>Registered Users Directory</h3>
@@ -128,6 +128,7 @@ function AssignRolesPage() {
           <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '20px', marginTop: '16px' }}>
             <label>
               <span>User Email Address</span>
+              <br />
               <input
                 name="email"
                 onChange={(e) => setEmail(e.target.value)}

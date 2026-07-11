@@ -19,28 +19,12 @@ function LandingPage() {
             </div>
           </div>
           <div className="hero-visual" aria-label="Campus-Y dashboard preview">
-            <div className="screen-card">
-              <div className="screen-top" />
-              <div className="screen-chart">
-                {[48, 62, 42, 76, 58, 84, 70].map((item, index) => (
-                  <span key={index} style={{ '--height': `${item}%` }} />
-                ))}
-              </div>
-              <div className="screen-lines">
-                <span />
-                <span />
-                <span />
-              </div>
-            </div>
-            <div className="floating-card">
-              <strong>Engagement +24%</strong>
-              <small>Last 30 days</small>
-            </div>
+          
           </div>
         </section>
 
         <section className="stats-strip" aria-label="Campus-Y statistics">
-          <strong>150+<span>Colleges</span></strong>
+          <strong>150+<span>Faculties</span></strong>
           <strong>2000+<span>Events</span></strong>
           <strong>50K+<span>Students</span></strong>
           <strong>95%<span>Satisfaction</span></strong>
@@ -67,8 +51,8 @@ function LandingPage() {
             {[
               ['calendar', 'Event Management', 'Create, manage, and schedule diverse campus activities.'],
               ['check', 'Approval Workflow', 'Multi-level review keeps every event compliant.'],
-              ['users', 'Instant Registration', 'One-click registration with automated waitlist management.'],
-              ['activity', 'Advanced Analytics', 'Dashboards for tracking turnout and engagement.'],
+              ['users', 'Instant Registration', 'One-click registration with automated waitlist management.']
+             
             ].map(([icon, title, text]) => (
               <article className="feature-card" key={title}>
                 <Icon name={icon} />
@@ -84,8 +68,8 @@ function LandingPage() {
             <h2>Seamless Experience for Everyone</h2>
             <p>Four clear steps to take events from idea to registration.</p>
           </div>
-          <div className="workflow-row" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
-            {['Create Proposal', 'Faculty Approval', 'Publish Event', 'Registration'].map((step) => (
+          <div className="workflow-row" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))' }}>
+            {['Create Proposal', 'Faculty Approval', 'HOD Approval', 'Admin Approval', 'Publish Event', 'Registration'].map((step) => (
               <span key={step}>{step}</span>
             ))}
           </div>

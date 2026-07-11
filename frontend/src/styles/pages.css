@@ -181,7 +181,7 @@
 .section-heading h2,
 .proposal-heading h2,
 .welcome-panel h2 {
-  font-size: 34px;
+  font-size: 52px;
   line-height: 1.1;
 }
 
@@ -360,13 +360,22 @@
   padding: 0 16px;
 }
 
-.login-page {
+/* .login-page {
   align-items: center;
   display: grid;
   gap: 80px;
   grid-template-columns: 1fr minmax(420px, 560px);
   min-height: 100vh;
   padding: 64px clamp(24px, 8vw, 120px);
+} */
+
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 32px;
+  background: var(--surface-soft);
 }
 
 .login-art {
@@ -410,7 +419,18 @@
   max-width: 520px;
 }
 
-.login-card {
+/* .login-card {
+  background: #fff;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  display: grid;
+  gap: 24px;
+  padding: 52px;
+} */
+ .login-card {
+  width: 100%;
+  max-width: 520px;
   background: #fff;
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-lg);
@@ -574,11 +594,11 @@
   grid-template-columns: repeat(3, 1fr);
 }
 
-.proposal-side {
+/* .proposal-side {
   display: grid;
   gap: 24px;
   align-content: start;
-}
+} */
 
 .upload-panel div {
   align-items: center;

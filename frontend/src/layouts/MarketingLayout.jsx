@@ -12,8 +12,8 @@ function MarketingLayout({ children }) {
           <a href="#workflow">Workflow</a>
         </nav>
         <div className="header-actions">
-          <Button to="/login" variant="ghost">Login</Button>
-          <Button to="/student">Open App</Button>
+          <Button to="/login" >Login</Button>
+          {/* <Button to="/login">Sign up</Button> */}
         </div>
       </header>
       {children}

@@ -3,42 +3,17 @@ import { useNavigate } from 'react-router-dom'
 import EventCard from '../components/EventCard'
 import Notice from '../components/Notice'
 import DashboardLayout from '../layouts/DashboardLayout'
-import { studentNav, clubNav, adminNav, reviewerNav } from '../data/navigation'
-import { api, getStoredUser, normalizeEvent, roleLabels } from '../lib/api'
+import { studentNav } from '../data/navigation'
+import { api, getSavedEventIds, getStoredUser, normalizeEvent, roleLabels, setSavedEventIds, sortEventsForDisplay } from '../lib/api'
 
 function SavedEventsPage() {
   const navigate = useNavigate()
   const user = useMemo(() => getStoredUser(), [])
   const [events, setEvents] = useState([])
-
-  // Dynamic Navigation menu config
-  const navConfig = useMemo(() => {
-    if (!user) return { navItems: [], title: 'CampusPulse', subtitle: 'University Hub' }
-    const roleId = Number(user.role_id)
-    if (roleId === 1) {
-      return { navItems: adminNav, title: 'Admin Central', subtitle: 'University Portal' }
-    } else if (roleId === 2 || roleId === 3) {
-      return { navItems: reviewerNav, title: 'Campus-Y Review', subtitle: 'Approval Workspace' }
-    } else if (roleId === 4 || roleId === 5) {
-      return {
-        navItems: clubNav,
-        title: 'Club Management',
-        subtitle: 'President Portal',
-        action: { label: 'New Proposal', icon: 'plus', to: '/proposal/new' },
-      }
-    } else {
-      return { navItems: studentNav, title: 'CampusPulse', subtitle: 'University Hub' }
-    }
-  }, [user])
-  
-  // Saved events state
-  const [savedIds, setSavedIds] = useState(() => {
-    const raw = localStorage.getItem('campus_y_saved_events')
-    return raw ? JSON.parse(raw) : []
-  })
-
+  const [savedIds, setSavedIds] = useState(() => getSavedEventIds(user?.user_id))
   const [status, setStatus] = useState({ loading: true, message: '', tone: 'info' })
   const [registeringId, setRegisteringId] = useState(null)
+  const [enrolledIds, setEnrolledIds] = useState(new Set())
 
   useEffect(() => {
     if (!user) {
@@ -46,9 +21,15 @@ function SavedEventsPage() {
       return
     }
 
-    api.events()
-      .then((data) => {
-        setEvents(data.map(normalizeEvent))
+    if (Number(user.role_id) !== 6) {
+      navigate('/events')
+      return
+    }
+
+    Promise.all([api.events(), api.myRegistrations()])
+      .then(([eventsData, registrationData]) => {
+        setEvents(eventsData.map(normalizeEvent))
+        setEnrolledIds(new Set(registrationData.map((item) => Number(item.event_id))))
         setStatus({ loading: false, message: '', tone: 'info' })
       })
       .catch((error) => {
@@ -56,9 +37,9 @@ function SavedEventsPage() {
       })
   }, [navigate, user])
 
-  // Filter events to only show saved ones
   const savedEvents = useMemo(() => {
-    return events.filter((event) => savedIds.includes(Number(event.event_id)))
+    const saved = events.filter((event) => savedIds.includes(Number(event.event_id)))
+    return sortEventsForDisplay(saved)
   }, [events, savedIds])
 
   const register = async (event) => {
@@ -66,9 +47,9 @@ function SavedEventsPage() {
     setStatus({ loading: false, message: '', tone: 'info' })
     try {
       await api.registerForEvent(event.event_id)
+      setEnrolledIds((current) => new Set([...current, Number(event.event_id)]))
       setStatus({ loading: false, message: 'Registration successful.', tone: 'success' })
-      
-      // Reload events to update registrations / seats
+
       const updatedEvents = await api.events()
       setEvents(updatedEvents.map(normalizeEvent))
     } catch (error) {
@@ -79,12 +60,14 @@ function SavedEventsPage() {
   }
 
   const toggleSave = (event) => {
+    if (!user?.user_id) return
+
     const eventId = Number(event.event_id)
     setSavedIds((current) => {
       const updated = current.includes(eventId)
         ? current.filter((id) => id !== eventId)
         : [...current, eventId]
-      localStorage.setItem('campus_y_saved_events', JSON.stringify(updated))
+      setSavedEventIds(user.user_id, updated)
       return updated
     })
   }
@@ -93,17 +76,16 @@ function SavedEventsPage() {
 
   return (
     <DashboardLayout
-      sidebarTitle={navConfig.title}
-      sidebarSubtitle={navConfig.subtitle}
-      navItems={navConfig.navItems}
-      action={navConfig.action}
+      sidebarTitle="Campus-Y"
+      sidebarSubtitle="Student Portal"
+      navItems={studentNav}
       user={displayName}
       role={roleLabels[user?.role_id] || 'Student'}
       topbarTitle="Saved Events"
     >
       <section className="welcome-panel">
-        <h2>Your Saved Events</h2>
-        <p>Keep track of events you are interested in. Click the bookmark icon to remove them from your saved list.</p>
+        <h2>My Saved Events</h2>
+        <p>Your bookmarked events are stored only on your student account in this browser.</p>
       </section>
 
       {status.message && <Notice tone={status.tone}>{status.message}</Notice>}
@@ -120,8 +102,9 @@ function SavedEventsPage() {
           <EventCard
             event={event}
             key={event.event_id}
-            onRegister={Number(user?.role_id) === 6 && event.computedStatus !== 'Completed' ? register : undefined}
+            onRegister={event.computedStatus !== 'Completed' ? register : undefined}
             registering={registeringId === event.event_id}
+            isEnrolled={enrolledIds.has(Number(event.event_id))}
             isSaved={true}
             onToggleSave={toggleSave}
           />

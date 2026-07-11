@@ -84,10 +84,18 @@ function AdminDashboard() {
   }, [events])
 
   const proposalsStats = useMemo(() => {
-    const pending = proposals.filter((p) => ['Pending', 'Under Faculty Review', 'Under HOD Review'].includes(p.status))
+    const awaitingAdmin = proposals.filter((p) => p.status === 'Pending')
+    const inPipeline = proposals.filter((p) => ['Under Faculty Review', 'Under HOD Review'].includes(p.status))
     const approved = proposals.filter((p) => p.status === 'Approved')
     const rejected = proposals.filter((p) => p.status === 'Rejected')
-    return { pending, approved, rejected }
+    return { awaitingAdmin, inPipeline, approved, rejected }
+  }, [proposals])
+
+  const pendingProposals = useMemo(() => {
+    return proposals
+      .filter((p) => p.status === 'Pending')
+      .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+      .slice(0, 3)
   }, [proposals])
 
   const toggleMetric = (metric) => {
@@ -96,8 +104,8 @@ function AdminDashboard() {
 
   return (
     <DashboardLayout
-      sidebarTitle="Admin Central"
-      sidebarSubtitle="University Portal"
+      sidebarTitle="Campus-Y"
+      
       navItems={adminNav}
       topbarTitle="Admin"
       user={user ? `${user.first_name} ${user.last_name}` : 'Admin'}
@@ -113,41 +121,35 @@ function AdminDashboard() {
         </div>
       </section>
 
-      <div className="metrics-grid admin-metrics" style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}>
+      <div className="metrics-grid admin-metrics" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
         <div onClick={() => toggleMetric('users')} style={{ cursor: 'pointer' }}>
           <MetricCard 
             icon="users" 
             label="Total Users" 
             value={dashboard?.total_users || 0} 
-            note="Click to expand list" 
+            // note="Click to expand list" 
             style={activeMetric === 'users' ? { border: '2px solid var(--primary)', background: '#f5f7ff' } : {}}
           />
         </div>
-        <div onClick={() => toggleMetric('events')} style={{ cursor: 'pointer' }}>
+        <div onClick={() => navigate('/events')} style={{ cursor: 'pointer' }}>
           <MetricCard 
             icon="calendar" 
             label="Total Events" 
             value={events.length} 
-            note="Click to check statuses" 
-            style={activeMetric === 'events' ? { border: '2px solid var(--primary)', background: '#f5f7ff' } : {}}
           />
         </div>
-        <div onClick={() => toggleMetric('proposals')} style={{ cursor: 'pointer' }}>
+        <div onClick={() => navigate('/admin/proposals')} style={{ cursor: 'pointer' }}>
           <MetricCard 
             icon="check" 
-            label="Proposal Requests" 
-            value={proposals.length} 
-            note="Click to see pending/rejected" 
-            style={activeMetric === 'proposals' ? { border: '2px solid var(--primary)', background: '#f5f7ff' } : {}}
+            label="Proposals Requests" 
+            value={proposalsStats.awaitingAdmin.length} 
           />
         </div>
-        <div onClick={() => toggleMetric('clubs')} style={{ cursor: 'pointer' }}>
+        <div onClick={() => navigate('/admin/clubs')} style={{ cursor: 'pointer' }}>
           <MetricCard 
             icon="users" 
             label="Total Clubs" 
             value={clubs.length} 
-            note="Click to view clubs list" 
-            style={activeMetric === 'clubs' ? { border: '2px solid var(--primary)', background: '#f5f7ff' } : {}}
           />
         </div>
       </div>
@@ -158,7 +160,7 @@ function AdminDashboard() {
           {activeMetric === 'users' && (
             <div>
               <h3><span style={{ color: 'var(--primary)' }}>👤</span> Total Users Breakdown</h3>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px', marginTop: '20px', textAlign: 'center' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px', marginTop: '20px', textAlign: 'center' }}>
                 <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '8px' }}>
                   <strong>Admin</strong>
                   <div style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--primary)', marginTop: '6px' }}>{usersStats.admin}</div>
@@ -231,9 +233,14 @@ function AdminDashboard() {
                   </thead>
                   <tbody>
                     <tr>
-                      <td style={{ fontWeight: 'bold', color: 'var(--warning)' }}>Pending Approval</td>
-                      <td>{proposalsStats.pending.length}</td>
-                      <td>{proposalsStats.pending.map((p) => p.title).join(', ') || 'None'}</td>
+                      <td style={{ fontWeight: 'bold', color: 'var(--warning)' }}>Awaiting Admin Approval</td>
+                      <td>{proposalsStats.awaitingAdmin.length}</td>
+                      <td>{proposalsStats.awaitingAdmin.map((p) => p.title).join(', ') || 'None'}</td>
+                    </tr>
+                    <tr>
+                      <td style={{ fontWeight: 'bold', color: 'var(--muted)' }}>In Faculty / HOD Review</td>
+                      <td>{proposalsStats.inPipeline.length}</td>
+                      <td>{proposalsStats.inPipeline.map((p) => p.title).join(', ') || 'None'}</td>
                     </tr>
                     <tr>
                       <td style={{ fontWeight: 'bold', color: 'var(--success)' }}>Approved Proposals</td>
@@ -291,7 +298,7 @@ function AdminDashboard() {
       <div className="admin-grid" style={{ marginTop: '24px' }}>
         <section className="panel registrations-panel" style={{ gridColumn: 'span 2' }}>
           <div className="panel-heading">
-            <h3>Recent Event Proposals (Awaiting Review)</h3>
+            <h3>Recent Event Proposals (Awaiting Admin Approval)</h3>
           </div>
           <table>
             <thead>
@@ -304,14 +311,14 @@ function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {proposals.map((proposal) => (
+              {pendingProposals.map((proposal) => (
                 <tr key={proposal.proposal_id}>
                   <td>{proposal.title}</td>
                   <td>{proposal.venue}</td>
                   <td>{formatDateTime(proposal.created_at)}</td>
                   <td><StatusBadge tone={proposal.status === 'Pending' ? 'warning' : 'success'}>{proposal.status}</StatusBadge></td>
                   <td>
-                    {['Pending', 'Under Faculty Review', 'Under HOD Review'].includes(proposal.status) ? (
+                    {proposal.status === 'Pending' ? (
                       <div className="table-actions">
                         <Button onClick={() => decideProposal(proposal, 'approve')}>Approve</Button>
                         <Button onClick={() => decideProposal(proposal, 'reject')} variant="secondary">Reject</Button>
@@ -320,13 +327,16 @@ function AdminDashboard() {
                   </td>
                 </tr>
               ))}
-              {!proposals.length && (
+              {!pendingProposals.length && (
                 <tr>
                   <td colSpan="5">No proposals found.</td>
                 </tr>
               )}
             </tbody>
           </table>
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px', paddingBottom: '10px' }}>
+            <Button onClick={() => navigate('/admin/proposals')} variant="secondary">View All Proposals</Button>
+          </div>
         </section>
       </div>
     </DashboardLayout>
