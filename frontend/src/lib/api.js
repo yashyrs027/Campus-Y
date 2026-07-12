@@ -80,7 +80,9 @@ export const api = {
   studentDashboard: () => request('/api/dashboard/student'),
   clubDashboard: () => request('/api/dashboard/club'),
   proposals: () => request('/api/proposals'),
+  proposal: (id) => request(`/api/proposals/${id}`),
   createProposal: (body) => request('/api/proposals', { method: 'POST', body: JSON.stringify(body) }),
+  updateProposal: (id, body) => request(`/api/proposals/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
   approveProposal: (id) => request(`/api/proposals/${id}/approve`, { method: 'PUT' }),
   rejectProposal: (id, rejection_reason) =>
     request(`/api/proposals/${id}/reject`, { method: 'PUT', body: JSON.stringify({ rejection_reason }) }),

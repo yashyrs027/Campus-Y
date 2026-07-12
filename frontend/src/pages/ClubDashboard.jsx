@@ -139,10 +139,10 @@ function ClubDashboard() {
       </section>
 
       <div className="metrics-grid">
-        <MetricCard icon="activity" label="Pending Proposals" value={dashboard?.proposal_status?.pending || 0}  />
-        <MetricCard icon="check" label="Approved Proposals" value={dashboard?.proposal_status?.approved || 0} />
-        <MetricCard icon="activity" label="Rejected Proposals" value={dashboard?.proposal_status?.rejected || 0}  />
-        <MetricCard icon="users" label="Total Participants" value={dashboard?.student_registrations || 0}  />
+        <MetricCard icon="activity" label="Pending Proposals" value={dashboard?.proposal_status?.pending || 0} onClick={() => navigate('/club/proposals', { state: { filter: 'Pending' } })} />
+        <MetricCard icon="check" label="Approved Proposals" value={dashboard?.proposal_status?.approved || 0} onClick={() => navigate('/club/proposals', { state: { filter: 'Approved' } })} />
+        <MetricCard icon="activity" label="Rejected Proposals" value={dashboard?.proposal_status?.rejected || 0} onClick={() => navigate('/club/proposals', { state: { filter: 'Rejected' } })} />
+        <MetricCard icon="users" label="Total Participants" value={dashboard?.student_registrations || 0} onClick={() => navigate('/reports/registrations')} />
       </div>
 
       <div className="student-grid" style={{ gridTemplateColumns: '1fr' }}>

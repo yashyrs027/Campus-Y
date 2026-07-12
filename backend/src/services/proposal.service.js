@@ -142,9 +142,23 @@ const createEventFromProposal = async (proposal) => {
             );
         }
 
+        const mergedData = {
+            ...proposal,
+            title: proposalData.title !== undefined ? proposalData.title : proposal.title,
+            venue: proposalData.venue !== undefined ? proposalData.venue : proposal.venue,
+            start_date: proposalData.start_date !== undefined ? proposalData.start_date : proposal.start_date,
+            end_date: proposalData.end_date !== undefined ? proposalData.end_date : proposal.end_date,
+            start_time: proposalData.start_time !== undefined ? proposalData.start_time : proposal.start_time,
+            end_time: proposalData.end_time !== undefined ? proposalData.end_time : proposal.end_time,
+            registration_deadline: proposalData.registration_deadline !== undefined ? proposalData.registration_deadline : proposal.registration_deadline,
+            expected_participants: proposalData.expected_participants !== undefined ? proposalData.expected_participants : proposal.expected_participants,
+        };
+
+        validateProposalSchedule(mergedData);
+
         return await proposalRepository.updateProposal(
             proposalId,
-            proposalData
+            mergedData
         );
     };
     const deleteProposal = async (proposalId, userId) => {

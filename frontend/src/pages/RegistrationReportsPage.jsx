@@ -10,15 +10,15 @@ import { api, formatDateTime, getStoredUser, roleLabels } from '../lib/api'
 
 function getNavConfig(roleId) {
   if (roleId === 1) {
-    return { navItems: adminNav, title: 'Admin Central', subtitle: 'University Portal' }
+    return { navItems: adminNav, title: 'Campus-Y' }
   }
   if (roleId === 2 || roleId === 3) {
-    return { navItems: reviewerNav, title: 'Campus-Y Review', subtitle: 'Approval Workspace' }
+    return { navItems: reviewerNav, title: 'Campus-Y' }
   }
   if (roleId === 4 || roleId === 5) {
-    return { navItems: clubNav, title: 'Club Management', subtitle: 'President Portal' }
+    return { navItems: clubNav, title: 'Campus-Y' }
   }
-  return { navItems: studentNav, title: 'Campus-Y', subtitle: 'Student Portal' }
+  return { navItems: studentNav, title: 'Campus-Y' }
 }
 
 function RegistrationReportsPage() {

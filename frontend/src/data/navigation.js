@@ -9,6 +9,7 @@ export const studentNav = [
 export const clubNav = [
   { label: 'Dashboard', icon: 'grid', to: '/club' },
   { label: 'Events', icon: 'calendar', to: '/events' },
+  { label: 'Track Proposals', icon: 'activity', to: '/club/proposals' },
   { label: 'Registration Reports', icon: 'users', to: '/reports/registrations' },
   { label: 'Event Proposals', icon: 'calendar', to: '/proposal/new' },
   { label: 'Club Profile', icon: 'building', to: '/club/profile' },
@@ -28,6 +29,7 @@ export const adminNav = [
 export const reviewerNav = [
   { label: 'Dashboard', icon: 'grid', to: '/review' },
   { label: 'Events', icon: 'calendar', to: '/events' },
+  { label: 'Proposal Requests', icon: 'calendar', to: '/review/proposals' },
   { label: 'Registration Reports', icon: 'users', to: '/reports/registrations' },
   { label: 'Profile', icon: 'users', to: '/profile' },
 ]

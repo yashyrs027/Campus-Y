@@ -78,9 +78,9 @@ function ReviewDashboard() {
       </section>
 
       <section className="metrics-grid admin-metrics">
-        <MetricCard icon="check" label="Awaiting Your Review"  value={pending} />
-        <MetricCard icon="calendar" label="Approved"  value={approved} />
-        <MetricCard icon="activity" label="Rejected"  value={rejected} />
+        <MetricCard icon="check" label="Awaiting Your Review"  value={pending} onClick={() => navigate('/review/proposals', { state: { filter: 'Pending' } })} />
+        <MetricCard icon="calendar" label="Approved"  value={approved} onClick={() => navigate('/review/proposals', { state: { filter: 'Approved' } })} />
+        <MetricCard icon="activity" label="Rejected"  value={rejected} onClick={() => navigate('/review/proposals', { state: { filter: 'Rejected' } })} />
       </section>
 
       <section className="panel">

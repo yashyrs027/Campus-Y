@@ -16,6 +16,8 @@ import AssignRolesPage from './pages/AssignRolesPage'
 import EventDetailsPage from './pages/EventDetailsPage'
 import AdminProposalsPage from './pages/AdminProposalsPage'
 import RegistrationReportsPage from './pages/RegistrationReportsPage'
+import TrackProposalsPage from './pages/TrackProposalsPage'
+import ReviewerProposalsPage from './pages/ReviewerProposalsPage'
 import { getStoredUser, getToken, dashboardPathForRole } from './lib/api'
 
 function ProtectedRoute({ children, allowedRoles }) {
@@ -79,6 +81,14 @@ function App() {
         }
       />
       <Route
+        path="/review/proposals"
+        element={
+          <ProtectedRoute allowedRoles={[2, 3]}>
+            <ReviewerProposalsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/proposal/new"
         element={
           <ProtectedRoute allowedRoles={[4, 5, 1]}>
@@ -115,6 +125,14 @@ function App() {
         element={
           <ProtectedRoute allowedRoles={[4, 5]}>
             <ClubDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/club/proposals"
+        element={
+          <ProtectedRoute allowedRoles={[4, 5]}>
+            <TrackProposalsPage />
           </ProtectedRoute>
         }
       />
