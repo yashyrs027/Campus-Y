@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { getEventImage } from "../data/eventImages";
 import Button from './Button'
 import Icon from './Icon'
 
@@ -18,6 +19,11 @@ function EventCard({ event, onRegister, registering, isSaved, onToggleSave, isEn
       style={{ cursor: 'pointer' }}
     >
       <div className={`event-art event-art-${event.tone}`}>
+
+    <img
+        src={getEventImage(event.title)}
+        className="event-image"
+    />
         <span className="chip chip-blue">{event.category}</span>
         {onToggleSave && (
           <button

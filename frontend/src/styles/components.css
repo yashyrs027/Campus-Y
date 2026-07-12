@@ -314,12 +314,22 @@
   background: #edf2ff;
   color: var(--primary-strong);
 }
+/* .chip {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 2;
+} */
 
 .chip-blue {
   background: var(--primary);
   color: #fff;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 2;
 }
 
 .status-success {
@@ -376,6 +386,12 @@
   min-height: 180px;
   padding: 18px;
   position: relative;
+}
+.event-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .event-art .icon-button {
