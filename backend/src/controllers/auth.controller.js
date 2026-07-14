@@ -95,11 +95,26 @@ const logout = async (req, res) => {
 
 };
 
+const getProfileStats = async (req, res, next) => {
+    try {
+        const { user_id, role_id, department_id } = req.user;
+        const stats = await authService.getProfileStats(user_id, role_id, department_id);
+
+        return res.status(200).json({
+            success: true,
+            data: stats
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
 module.exports = {
     register,
     login,
     getProfile,
     updateProfile,
     changePassword,
-    logout
+    logout,
+    getProfileStats
 };

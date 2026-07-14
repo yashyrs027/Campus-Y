@@ -251,6 +251,63 @@ const getMyEventRegistrationCount = async (userId) => {
     return result.rows[0];
 
 };
+
+const countCertificates = async (studentId) => {
+    const result = await pool.query(
+        `
+        SELECT COUNT(*) AS total
+        FROM event_registrations er
+        JOIN events e ON er.event_id = e.event_id
+        WHERE er.student_id = $1
+          AND er.status = 'Registered'
+          AND e.end_datetime < NOW()
+        `,
+        [studentId]
+    );
+    return Number(result.rows[0].total);
+};
+
+const countReviewsPerformed = async (roleId, departmentId) => {
+    const role = Number(roleId);
+    if (role === 3) {
+        const result = await pool.query(
+            `
+            SELECT COUNT(*) AS total
+            FROM event_proposals ep
+            JOIN clubs c ON ep.club_id = c.club_id
+            WHERE c.department_id = $1
+              AND (ep.status IN ('Under HOD Review', 'Pending', 'Approved') OR (ep.status = 'Rejected' AND ep.rejected_by_role = 3))
+            `,
+            [departmentId]
+        );
+        return Number(result.rows[0].total);
+    }
+    if (role === 2) {
+        const result = await pool.query(
+            `
+            SELECT COUNT(*) AS total
+            FROM event_proposals ep
+            JOIN clubs c ON ep.club_id = c.club_id
+            WHERE c.department_id = $1
+              AND (ep.status IN ('Pending', 'Approved') OR (ep.status = 'Rejected' AND ep.rejected_by_role = 2))
+            `,
+            [departmentId]
+        );
+        return Number(result.rows[0].total);
+    }
+    if (role === 1) {
+        const result = await pool.query(
+            `
+            SELECT COUNT(*) AS total
+            FROM event_proposals ep
+            WHERE ep.status = 'Approved' OR (ep.status = 'Rejected' AND ep.rejected_by_role = 1)
+            `
+        );
+        return Number(result.rows[0].total);
+    }
+    return 0;
+};
+
 module.exports = {
-    getAdminDashboard,getStudentProfile,countMyRegistrations,getUpcomingEvents,getStudentRegistrations,countPendingProposals,countApprovedProposals,countFacultyEvents,getRecentRegistrations,getMyProposalsCount,getProposalStatus,getMyEventsCount,getMyEventRegistrationCount
+    getAdminDashboard,getStudentProfile,countMyRegistrations,getUpcomingEvents,getStudentRegistrations,countPendingProposals,countApprovedProposals,countFacultyEvents,getRecentRegistrations,getMyProposalsCount,getProposalStatus,getMyEventsCount,getMyEventRegistrationCount,countCertificates,countReviewsPerformed
 };

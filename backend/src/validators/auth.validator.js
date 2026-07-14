@@ -82,9 +82,15 @@ const updateProfileValidation = [
         .withMessage("Invalid gender"),
 
     body("profile_image")
-        .optional()
-        .isURL()
-        .withMessage("Profile image must be a valid URL")
+        .optional({ checkFalsy: true })
+        .custom((value) => {
+            const isHttp = value.startsWith('http://') || value.startsWith('https://');
+            const isDataUri = value.startsWith('data:image/');
+            if (!isHttp && !isDataUri) {
+                throw new Error("Profile image must be a valid URL or base64 image data URI");
+            }
+            return true;
+        })
 
 ];
 const changePasswordValidation = [

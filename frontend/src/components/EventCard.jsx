@@ -53,7 +53,7 @@ function EventCard({ event, onRegister, registering, isSaved, onToggleSave, isEn
         </p>
         <p>
           <Icon name="calendar" />
-          Register by: <strong>{event.registrationDeadline}</strong>
+          Register Deadline: <strong>{event.registrationDeadline}</strong>
         </p>
         <p>
           <Icon name="activity" />

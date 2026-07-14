@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const authRepository = require("../repositories/auth.repository");
+const dashboardRepository = require("../repositories/dashboard.repository");
 const jwt = require("jsonwebtoken");
 
 const register = async (userData) => {
@@ -121,6 +122,25 @@ const changePassword = async (userId, oldPassword, newPassword) => {
     return;
 };
 
+const getProfileStats = async (userId, roleId, departmentId) => {
+    const role = Number(roleId);
+    const stats = {};
+
+    if (role === 6) {
+        stats.registrations = Number(await dashboardRepository.countMyRegistrations(userId));
+        stats.certificates = Number(await dashboardRepository.countCertificates(userId));
+    } else if (role === 4 || role === 5) {
+        const events = await dashboardRepository.getMyEventsCount(userId);
+        const regs = await dashboardRepository.getMyEventRegistrationCount(userId);
+        stats.organized_events = Number(events?.total || 0);
+        stats.registrations_received = Number(regs?.total || 0);
+    } else if (role === 1 || role === 2 || role === 3) {
+        stats.reviews_performed = Number(await dashboardRepository.countReviewsPerformed(role, departmentId));
+    }
+
+    return stats;
+};
+
 module.exports = {
-    register, login , getProfile,updateProfile,changePassword
+    register, login , getProfile,updateProfile,changePassword,getProfileStats
 };

@@ -21,6 +21,7 @@ router.get("/me",authenticate,(req, res) => {res.json({success: true, user: req.
     }
 );
 
+router.get("/profile/stats", authenticate, authController.getProfileStats);
 router.get("/profile",authenticate,authController.getProfile);
 
 router.put("/profile",authenticate,updateProfileValidation,validate,authController.updateProfile);

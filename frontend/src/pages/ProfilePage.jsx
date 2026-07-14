@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Button from '../components/Button'
 import Icon from '../components/Icon'
 import Notice from '../components/Notice'
+import MetricCard from '../components/MetricCard'
 import DashboardLayout from '../layouts/DashboardLayout'
 import { studentNav, clubNav, adminNav, reviewerNav } from '../data/navigation'
 import { api, getStoredUser, getToken, saveSession, roleLabels } from '../lib/api'
@@ -19,6 +20,7 @@ function ProfilePage() {
     email: '',
     role_id: '',
     department_id: '',
+    profile_image: '',
   })
   const [departments, setDepartments] = useState([])
   const [passwordForm, setPasswordForm] = useState({
@@ -29,6 +31,24 @@ function ProfilePage() {
 
   const [profileStatus, setProfileStatus] = useState({ loading: false, message: '', tone: 'info' })
   const [passwordStatus, setPasswordStatus] = useState({ loading: false, message: '', tone: 'info' })
+  const [stats, setStats] = useState(null)
+  const fileInputRef = useRef(null)
+
+  const handleFileUpload = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      setProfileStatus({ loading: false, message: 'Please select a valid image file.', tone: 'danger' })
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      setProfile((prev) => ({ ...prev, profile_image: event.target.result }))
+    }
+    reader.readAsDataURL(file)
+  }
 
   // Determine navigation menu and titles dynamically based on role
   const navConfig = useMemo(() => {
@@ -55,10 +75,10 @@ function ProfilePage() {
       return
     }
 
-    // Fetch profile details and department list
+    // Fetch profile details, department list, and profile stats
     setProfileStatus({ loading: true, message: '', tone: 'info' })
-    Promise.all([api.profile(), api.catalog()])
-      .then(([profileData, catalogData]) => {
+    Promise.all([api.profile(), api.catalog(), api.profileStats()])
+      .then(([profileData, catalogData, statsData]) => {
         setProfile({
           first_name: profileData.first_name || '',
           last_name: profileData.last_name || '',
@@ -67,8 +87,10 @@ function ProfilePage() {
           email: profileData.email || '',
           role_id: profileData.role_id || user.role_id,
           department_id: profileData.department_id || '',
+          profile_image: profileData.profile_image || '',
         })
         setDepartments(catalogData.departments || [])
+        setStats(statsData)
         setProfileStatus({ loading: false, message: '', tone: 'info' })
       })
       .catch((error) => {
@@ -94,6 +116,7 @@ function ProfilePage() {
         last_name: profile.last_name,
         phone: profile.phone || null,
         gender: profile.gender,
+        profile_image: profile.profile_image || null,
       })
 
       // Update local storage session so topbar is updated instantly
@@ -103,6 +126,7 @@ function ProfilePage() {
           ...user,
           first_name: updated.first_name,
           last_name: updated.last_name,
+          profile_image: updated.profile_image,
         },
       }
       saveSession(session)
@@ -113,6 +137,7 @@ function ProfilePage() {
         last_name: updated.last_name,
         phone: updated.phone || '',
         gender: updated.gender,
+        profile_image: updated.profile_image || '',
       }))
       setProfileStatus({ loading: false, message: 'Profile updated successfully.', tone: 'success' })
     } catch (error) {
@@ -168,6 +193,27 @@ function ProfilePage() {
         <p>Keep your user information up to date and manage your account security.</p>
       </section>
 
+      {/* Stats Dashboard Section */}
+      {stats && (
+        <section className="metrics-grid" style={{ marginBottom: '24px', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))' }}>
+          {Number(profile.role_id) === 6 && (
+            <>
+              <MetricCard icon="calendar" label="Events Registered" value={stats.registrations ?? 0} />
+              <MetricCard icon="certificate" label="Completed Events" value={stats.certificates ?? 0} />
+            </>
+          )}
+          {(Number(profile.role_id) === 4 || Number(profile.role_id) === 5) && (
+            <>
+              <MetricCard icon="activity" label="Organized Events" value={stats.organized_events ?? 0} />
+              <MetricCard icon="users" label="Total Registrations" value={stats.registrations_received ?? 0} />
+            </>
+          )}
+          {[1, 2, 3].includes(Number(profile.role_id)) && (
+            <MetricCard icon="check" label="Reviews Performed" value={stats.reviews_performed ?? 0} />
+          )}
+        </section>
+      )}
+
       <div className="proposal-grid">
         <div className="panel">
           <h3><Icon name="users" /> Personal Details</h3>
@@ -176,6 +222,48 @@ function ProfilePage() {
           </p>
 
           {profileStatus.message && <Notice tone={profileStatus.tone}>{profileStatus.message}</Notice>}
+
+          {/* Avatar Section */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px', paddingBottom: '20px', borderBottom: '1px solid var(--border-soft)' }}>
+            <span style={{ fontSize: '14px', fontWeight: '600', color: 'var(--text-strong)' }}>Profile Picture</span>
+            <div style={{ display: 'flex', gap: '20px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <div style={{ position: 'relative', width: '80px', height: '80px', borderRadius: '50%', overflow: 'hidden', border: '3px solid var(--primary-soft)', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {profile.profile_image ? (
+                  <img src={profile.profile_image} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <span style={{ fontSize: '28px', fontWeight: 'bold', color: 'var(--primary-strong)' }}>
+                    {displayName.split(' ').map((p) => p[0]).join('')}
+                  </span>
+                )}
+              </div>
+              <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  ref={fileInputRef} 
+                  onChange={handleFileUpload} 
+                  style={{ display: 'none' }} 
+                />
+                <Button 
+                  type="button" 
+                  onClick={() => fileInputRef.current?.click()} 
+                  style={{ minHeight: 'auto', padding: '10px 18px', fontSize: '14px' }}
+                >
+                  Upload Picture
+                </Button>
+                {profile.profile_image && (
+                  <Button 
+                    type="button" 
+                    variant="ghost" 
+                    onClick={() => setProfile((prev) => ({ ...prev, profile_image: '' }))} 
+                    style={{ minHeight: 'auto', padding: '10px 14px', fontSize: '14px', color: 'var(--danger)' }}
+                  >
+                    Remove
+                  </Button>
+                )}
+              </div>
+            </div>
+          </div>
 
           <form onSubmit={submitProfile} className="proposal-form" style={{ gap: '20px' }}>
             <div className="form-row">

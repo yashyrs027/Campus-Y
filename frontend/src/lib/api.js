@@ -68,6 +68,7 @@ export const api = {
   register: (body) => request('/api/auth/register', { method: 'POST', body: JSON.stringify(body) }),
   me: () => request('/api/auth/me'),
   profile: () => request('/api/auth/profile'),
+  profileStats: () => request('/api/auth/profile/stats'),
   updateProfile: (body) => request('/api/auth/profile', { method: 'PUT', body: JSON.stringify(body) }),
   changePassword: (body) => request('/api/auth/change-password', { method: 'POST', body: JSON.stringify(body) }),
   logout: () => request('/api/auth/logout', { method: 'POST' }),
