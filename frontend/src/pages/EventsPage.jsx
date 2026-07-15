@@ -136,7 +136,7 @@ function EventsPage() {
       </section>
 
       <section className="filter-panel" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', alignItems: 'center' }}>
-        <SearchBar onChange={(event) => setQuery(event.target.value)} placeholder="Search by event title..." value={query} />
+        <SearchBar  onChange={(event) => setQuery(event.target.value)} placeholder="Search by event title..." value={query} />
         
         <select
           value={selectedCategory}

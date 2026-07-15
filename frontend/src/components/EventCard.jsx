@@ -19,8 +19,7 @@ function EventCard({ event, onRegister, registering, isSaved, onToggleSave, isEn
       style={{ cursor: 'pointer' }}
     >
       <div className={`event-art event-art-${event.tone}`}>
-
-    <img
+        <img
         src={getEventImage(event.title)}
         className="event-image"
     />

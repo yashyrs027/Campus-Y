@@ -125,7 +125,7 @@ function RegistrationReportsPage() {
 
       {!status.loading && !selectedEvent && (
         <>
-          <section style={{ marginBottom: '20px', maxWidth: '420px' }}>
+          <section style={{ marginBottom: '20px',maxWidth: '800px' }}>
             <SearchBar
               placeholder="Search events by title, club, or venue..."
               value={eventQuery}
