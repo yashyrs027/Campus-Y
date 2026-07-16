@@ -300,40 +300,42 @@ function AdminDashboard() {
           <div className="panel-heading">
             <h3>Recent Event Proposals (Awaiting Admin Approval)</h3>
           </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Venue</th>
-                <th>Created</th>
-                <th>Status</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pendingProposals.map((proposal) => (
-                <tr key={proposal.proposal_id}>
-                  <td>{proposal.title}</td>
-                  <td>{proposal.venue}</td>
-                  <td>{formatDateTime(proposal.created_at)}</td>
-                  <td><StatusBadge tone={proposal.status === 'Pending' ? 'warning' : 'success'}>{proposal.status}</StatusBadge></td>
-                  <td>
-                    {proposal.status === 'Pending' ? (
-                      <div className="table-actions">
-                        <Button onClick={() => decideProposal(proposal, 'approve')}>Approve</Button>
-                        <Button onClick={() => decideProposal(proposal, 'reject')} variant="secondary">Reject</Button>
-                      </div>
-                    ) : 'Reviewed'}
-                  </td>
-                </tr>
-              ))}
-              {!pendingProposals.length && (
+          <div className="table-scroll">
+            <table>
+              <thead>
                 <tr>
-                  <td colSpan="5">No proposals found.</td>
+                  <th>Title</th>
+                  <th>Venue</th>
+                  <th>Created</th>
+                  <th>Status</th>
+                  <th>Action</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {pendingProposals.map((proposal) => (
+                  <tr key={proposal.proposal_id}>
+                    <td>{proposal.title}</td>
+                    <td>{proposal.venue}</td>
+                    <td>{formatDateTime(proposal.created_at)}</td>
+                    <td><StatusBadge tone={proposal.status === 'Pending' ? 'warning' : 'success'}>{proposal.status}</StatusBadge></td>
+                    <td>
+                      {proposal.status === 'Pending' ? (
+                        <div className="table-actions">
+                          <Button onClick={() => decideProposal(proposal, 'approve')}>Approve</Button>
+                          <Button onClick={() => decideProposal(proposal, 'reject')} variant="secondary">Reject</Button>
+                        </div>
+                      ) : 'Reviewed'}
+                    </td>
+                  </tr>
+                ))}
+                {!pendingProposals.length && (
+                  <tr>
+                    <td colSpan="5">No proposals found.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
           <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px', paddingBottom: '10px' }}>
             <Button onClick={() => navigate('/admin/proposals')} variant="secondary">View All Proposals</Button>
           </div>

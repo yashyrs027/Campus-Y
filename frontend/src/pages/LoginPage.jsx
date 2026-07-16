@@ -146,12 +146,29 @@ function LoginPage() {
           <input name="email" onChange={updateField} placeholder="name@university.edu" required type="email" value={form.email} />
         </label>
         <label>
-          <span>Password</span>
+          <span style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <span>Password</span>
+          </span>
           <input minLength="8" name="password" onChange={updateField} placeholder="Password" required type="password" value={form.password} />
         </label>
         <label className="remember-row">
-          <input type="checkbox" />
-          Remember this device
+            {mode === 'login' && (
+              <button
+                type="button"
+                onClick={() => navigate('/forgot-password')}
+                style={{
+                  background: 'none',
+                   border: 'none',
+                  color: 'var(--primary)',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  padding: 0
+                }}
+              >
+                Forgot Password?
+              </button>
+            )}
         </label>
         <Button className="wide" disabled={status.loading} icon="arrowRight" type="submit">
           {status.loading ? 'Working...' : mode === 'login' ? 'Sign In to Campus-Y' : 'Create and Sign In'}

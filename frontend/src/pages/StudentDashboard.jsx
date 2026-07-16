@@ -90,35 +90,37 @@ function StudentDashboard() {
               View All
             </button>
           </div>
-          <table>
-            <thead>
-              <tr>
-                <th>Event Name</th>
-                <th>Date</th>
-                <th>Venue</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {registrations.map((item) => (
-                <tr key={item.registration_id}>
-                  <td>{item.title}</td>
-                  <td>{formatDateTime(item.start_datetime)}</td>
-                  <td><span className="chip">{item.venue || 'Campus'}</span></td>
-                  <td>
-                    <StatusBadge tone={getEventStatusTone(item.eventStatus)}>
-                      {item.eventStatus}
-                    </StatusBadge>
-                  </td>
-                </tr>
-              ))}
-              {!registrations.length && (
+          <div className="table-scroll">
+            <table>
+              <thead>
                 <tr>
-                  <td colSpan="4">No registrations yet.</td>
+                  <th>Event Name</th>
+                  <th>Date</th>
+                  <th>Venue</th>
+                  <th>Status</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {registrations.map((item) => (
+                  <tr key={item.registration_id}>
+                    <td>{item.title}</td>
+                    <td>{formatDateTime(item.start_datetime)}</td>
+                    <td><span className="chip">{item.venue || 'Campus'}</span></td>
+                    <td>
+                      <StatusBadge tone={getEventStatusTone(item.eventStatus)}>
+                        {item.eventStatus}
+                      </StatusBadge>
+                    </td>
+                  </tr>
+                ))}
+                {!registrations.length && (
+                  <tr>
+                    <td colSpan="4">No registrations yet.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </section>
 
         <aside className="quick-panel">

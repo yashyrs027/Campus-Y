@@ -677,15 +677,30 @@
 }
 
 @media (max-width: 980px) {
-  .marketing-header,
   .section-heading,
   .proposal-heading {
     align-items: flex-start;
     flex-direction: column;
   }
 
+  .marketing-header {
+    align-items: center !important;
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+    padding: 16px 20px;
+  }
+
   .marketing-header nav {
     flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    margin: 8px 0;
+  }
+
+  .header-actions {
+    justify-content: center;
+    width: 100%;
   }
 
   .hero-section,

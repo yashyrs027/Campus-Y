@@ -16,6 +16,10 @@ router.post("/register", registerValidation, validate, authController.register);
 
 router.post( "/login",loginValidation,validate,authController.login);
 
+router.post("/forgot-password", authController.forgotPassword);
+router.post("/verify-otp", authController.verifyOtp);
+router.post("/reset-password", authController.resetPassword);
+
 
 router.get("/me",authenticate,(req, res) => {res.json({success: true, user: req.user});
     }

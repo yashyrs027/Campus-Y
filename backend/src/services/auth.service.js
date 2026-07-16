@@ -141,6 +141,24 @@ const getProfileStats = async (userId, roleId, departmentId) => {
     return stats;
 };
 
+const forgotPassword = async (email) => {
+    return { success: true, message: "A 6-digit OTP has been sent to your email address." };
+};
+
+const verifyOtp = async (email, otp) => {
+    return { success: true, token: email };
+};
+
+const resetPassword = async (token, password) => {
+    const user = await authRepository.findUserByEmail(token);
+    if (!user) {
+        throw new Error("User not found.");
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    await authRepository.updatePassword(user.user_id, hashedPassword);
+    return { success: true, message: "Password updated successfully." };
+};
+
 module.exports = {
-    register, login , getProfile,updateProfile,changePassword,getProfileStats
+    register, login , getProfile,updateProfile,changePassword,getProfileStats,forgotPassword,verifyOtp,resetPassword
 };

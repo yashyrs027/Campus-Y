@@ -512,14 +512,60 @@ th {
   .sidebar {
     min-height: auto;
     position: static;
+    padding: 16px 20px;
+    gap: 16px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
   }
 
   .side-nav {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .side-nav::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
+
+  .side-nav a {
+    white-space: nowrap;
+    min-height: 40px;
+    padding: 0 14px;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+
+  .sidebar-logout {
+    display: none !important;
+  }
+
+  .sidebar-action {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    border-top: none !important;
+    width: auto !important;
+    flex-shrink: 0;
   }
 
   .topbar {
     grid-template-columns: 1fr;
+    gap: 12px;
+    height: auto;
+    padding: 16px 20px;
+  }
+
+  .topbar-actions {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .user-pill span {
+    display: none;
   }
 
   .event-grid:not(.event-grid-horizontal),

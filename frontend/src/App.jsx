@@ -18,6 +18,10 @@ import AdminProposalsPage from './pages/AdminProposalsPage'
 import RegistrationReportsPage from './pages/RegistrationReportsPage'
 import TrackProposalsPage from './pages/TrackProposalsPage'
 import ReviewerProposalsPage from './pages/ReviewerProposalsPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import VerifyOtpPage from './pages/VerifyOtpPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
+import PasswordResetSuccessPage from './pages/PasswordResetSuccessPage'
 import { getStoredUser, getToken, dashboardPathForRole } from './lib/api'
 
 function ProtectedRoute({ children, allowedRoles }) {
@@ -176,6 +180,10 @@ function App() {
           </ProtectedRoute>
         }
       />
+      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+      <Route path="/verify-otp" element={<VerifyOtpPage />} />
+      <Route path="/reset-password" element={<ResetPasswordPage />} />
+      <Route path="/reset-success" element={<PasswordResetSuccessPage />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
