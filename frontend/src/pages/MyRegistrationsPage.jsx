@@ -23,9 +23,9 @@ function MyRegistrationsPage() {
 
   const activeFilter = useMemo(() => {
     const filter = searchParams.get('filter')
-    if (filter === 'completed') return 'Completed'
-    if (FILTERS.includes(filter)) return filter
-    return 'All'
+    if (!filter) return 'All'
+    const matched = FILTERS.find((f) => f.toLowerCase() === filter.toLowerCase())
+    return matched || 'All'
   }, [searchParams])
 
   const registrations = useMemo(
