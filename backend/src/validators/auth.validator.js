@@ -7,10 +7,10 @@ const registerValidation = [
         .notEmpty()
         .withMessage("First name is required"),
 
-    body("last_name")
-        .trim()
-        .notEmpty()
-        .withMessage("Last name is required"),
+    // body("last_name")
+    //     .trim()
+    //     .notEmpty()
+    //     .withMessage("Last name is required"),
 
     body("email")
         .isEmail()
