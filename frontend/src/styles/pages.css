@@ -419,18 +419,9 @@
   max-width: 520px;
 }
 
-/* .login-card {
-  background: #fff;
-  border: 1px solid var(--border-soft);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow);
-  display: grid;
-  gap: 24px;
-  padding: 52px;
-} */
  .login-card {
   width: 100%;
-  max-width: 520px;
+  max-width: 620px;
   background: #fff;
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-lg);

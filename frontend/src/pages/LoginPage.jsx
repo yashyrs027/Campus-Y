@@ -68,16 +68,6 @@ function LoginPage() {
 
   return (
     <main className="login-page">
-      {/* <section className="login-art">
-        <div className="campus-illustration">
-          <span />
-          <span />
-          <span />
-        </div>
-        <h1>The pulse of <strong>Campus Life.</strong></h1>
-        <p>Join the most active student ecosystem to discover clubs, manage schedules, and coordinate with faculty.</p>
-      </section> */}
-
       <form className="login-card" onSubmit={submit}>
         <Brand />
         <div>
@@ -106,11 +96,11 @@ function LoginPage() {
             <div className="form-row">
               <label>
                 <span>First Name</span>
-                <input name="first_name" onChange={updateField} placeholder="Alex" required value={form.first_name} />
+                <input name="first_name" onChange={updateField} placeholder="Hardik" required value={form.first_name} />
               </label>
               <label>
                 <span>Last Name</span>
-                <input name="last_name" onChange={updateField} placeholder="Rivera" required value={form.last_name} />
+                <input name="last_name" onChange={updateField} placeholder="Gupta" value={form.last_name} />
               </label>
             </div>
             <label>
