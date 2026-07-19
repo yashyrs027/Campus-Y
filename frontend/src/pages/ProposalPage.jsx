@@ -43,6 +43,7 @@ function ProposalPage() {
     end_time: '',
     registration_deadline: '',
     expected_participants: '',
+    banner: '',
   })
   
   const [catalog, setCatalog] = useState({ clubs: [], event_categories: [] })
@@ -439,8 +440,75 @@ function ProposalPage() {
                     <td style={{ fontWeight: 'bold' }}>Description</td>
                     <td style={{ whiteSpace: 'pre-wrap' }}>{form.description}</td>
                   </tr>
+                  <tr>
+                    <td style={{ fontWeight: 'bold' }}>Event Banner / Poster</td>
+                    <td>
+                      {form.banner ? (
+                        <span style={{ color: 'var(--success)', fontWeight: '600' }}>✓ Custom Poster Uploaded</span>
+                      ) : (
+                        <span style={{ color: 'var(--muted)', italic: 'true' }}>None (Default System Graphic will be used)</span>
+                      )}
+                    </td>
+                  </tr>
                 </tbody>
               </table>
+
+              {/* Event Banner / Poster Upload Section (Optional) */}
+              <div style={{ marginTop: '16px', padding: '20px', background: '#f8fafc', borderRadius: 'var(--radius)', border: '1px solid var(--border-soft)' }}>
+                <h4 style={{ fontSize: '15px', fontWeight: '600', margin: '0 0 6px 0', color: 'var(--text-strong)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Icon name="bookmark" /> Event Poster / Banner (Optional)
+                </h4>
+                <p style={{ fontSize: '13px', color: 'var(--muted)', margin: '0 0 16px 0' }}>
+                  Upload an official poster or banner image (PNG/JPG). If left empty, a stylized system default graphic will be generated automatically.
+                </p>
+
+                <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    id="proposal-banner-input"
+                    style={{ display: 'none' }}
+                    onChange={(e) => {
+                      const file = e.target.files[0]
+                      if (!file) return
+                      if (!file.type.startsWith('image/')) {
+                        setStatus({ loading: false, message: 'Please select a valid image file (PNG/JPG).', tone: 'danger' })
+                        return
+                      }
+                      const reader = new FileReader()
+                      reader.onload = (event) => {
+                        setForm((current) => ({ ...current, banner: event.target.result }))
+                      }
+                      reader.readAsDataURL(file)
+                    }}
+                  />
+                  
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    onClick={() => document.getElementById('proposal-banner-input')?.click()}
+                  >
+                    {form.banner ? 'Change Poster Image' : 'Upload Banner / Poster'}
+                  </Button>
+
+                  {form.banner && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => setForm((current) => ({ ...current, banner: '' }))}
+                      style={{ color: 'var(--danger)' }}
+                    >
+                      Remove Poster
+                    </Button>
+                  )}
+                </div>
+
+                {form.banner && (
+                  <div style={{ marginTop: '16px', width: '100%', maxHeight: '200px', borderRadius: 'var(--radius)', overflow: 'hidden', border: '1px solid var(--border-soft)' }}>
+                    <img src={form.banner} alt="Event Banner Preview" style={{ width: '100%', height: '200px', objectFit: 'cover' }} />
+                  </div>
+                )}
+              </div>
 
               <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
                 <Button onClick={handleBack} variant="secondary">Back</Button>

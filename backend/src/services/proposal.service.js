@@ -18,6 +18,7 @@ const createEventFromProposal = async (proposal) => {
         title: proposal.title?.trim() || "Untitled Event",
         description: proposal.description?.trim() || "No description provided.",
         venue: proposal.venue?.trim() || "Main Campus",
+        banner: proposal.banner || null,
         start_datetime: start,
         end_datetime: end,
         capacity: Number(proposal.expected_participants) || 100,

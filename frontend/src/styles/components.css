@@ -329,7 +329,7 @@
   color: #fff;
   letter-spacing: 0.05em;
   text-transform: uppercase;
-  position: absolute;
+  /* position: absolute; */
     top: 16px;
     left: 16px;
     z-index: 2;

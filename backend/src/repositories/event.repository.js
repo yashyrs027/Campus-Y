@@ -1,5 +1,23 @@
 const pool = require("../config/db");
 
+// const findProposalById = async (proposalId) => {
+//     const result = await pool.query(
+//         `SELECT proposal_id, status
+//          FROM event_proposals
+//          WHERE proposal_id=$1`,
+//         [proposalId]
+//     );
+
+//     return result.rows[0];
+// };
+
+// const findEventByProposal = async (proposalId) => {
+//     const result = await pool.query(
+//         `SELECT event_id
+//          FROM events
+//          WHERE proposal_id=$1`,
+
+
 const findProposalById = async (proposalId) => {
     const result = await pool.query(
         `SELECT proposal_id, status
@@ -30,6 +48,7 @@ const createEvent = async (eventData) => {
         title,
         description,
         venue,
+        banner,
         start_datetime,
         end_datetime,
         capacity,
@@ -46,6 +65,7 @@ const createEvent = async (eventData) => {
             title,
             description,
             venue,
+            banner,
             start_datetime,
             end_datetime,
             capacity,
@@ -55,7 +75,7 @@ const createEvent = async (eventData) => {
         )
         VALUES
         (
-            $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12
+            $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13
         )
         RETURNING *`,
         [
@@ -65,14 +85,14 @@ const createEvent = async (eventData) => {
             title,
             description,
             venue,
+            banner || null,
             start_datetime,
             end_datetime,
             capacity,
             registration_deadline,
             0,
             status
-        ]
-    );
+        ]);
 
     return result.rows[0];
 };

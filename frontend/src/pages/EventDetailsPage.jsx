@@ -6,6 +6,7 @@ import Notice from '../components/Notice'
 import StatusBadge from '../components/StatusBadge'
 import DashboardLayout from '../layouts/DashboardLayout'
 import { studentNav, clubNav, adminNav, reviewerNav } from '../data/navigation'
+import { getEventImage } from '../data/eventImages'
 import { api, getStoredUser, normalizeEvent, roleLabels } from '../lib/api'
 
 function EventDetailsPage() {
@@ -108,6 +109,17 @@ function EventDetailsPage() {
       {event && (
         <div className="panel" style={{ width: '100%', padding: '32px', display: 'grid', gap: '32px' }}>
           
+          {/* Banner / Poster Header Visualization */}
+          {(event.banner || getEventImage(event.title)) && (
+            <div style={{ width: '100%', maxHeight: '320px', borderRadius: 'var(--radius)', overflow: 'hidden', border: '1px solid var(--border-soft)' }}>
+              <img 
+                src={event.banner || getEventImage(event.title)} 
+                alt={event.title} 
+                style={{ width: '100%', height: '320px', objectFit: 'cover' }} 
+              />
+            </div>
+          )}
+
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px', borderBottom: '1px solid var(--border-soft)', paddingBottom: '24px' }}>
             <div>
               <span className="chip chip-blue" style={{ marginBottom: '12px', display: 'inline-block' }}>{event.category}</span>

@@ -30,6 +30,9 @@ const createProposalValidation = [
         .isInt({ min: 1 })
         .withMessage("Expected participants must be greater than 0"),
 
+    body("banner")
+        .optional({ checkFalsy: true }),
+
     (req, res, next) => {
 
         const errors = validationResult(req);

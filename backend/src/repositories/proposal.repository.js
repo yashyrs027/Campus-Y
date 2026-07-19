@@ -17,11 +17,12 @@ const createProposal = async (proposalData) => {
             end_time,
             registration_deadline,
             expected_participants,
+            banner,
             status
         )
         VALUES
         (
-            $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,COALESCE($13, 'Pending')::proposal_status_enum
+            $1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,COALESCE($14, 'Pending')::proposal_status_enum
         )
         RETURNING *;
     `;
@@ -39,6 +40,7 @@ const createProposal = async (proposalData) => {
         proposalData.end_time,
         proposalData.registration_deadline,
         proposalData.expected_participants,
+        proposalData.banner || null,
         proposalData.status || null
     ];
 
