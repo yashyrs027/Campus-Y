@@ -4,6 +4,7 @@ export const studentNav = [
   { label: 'My Registrations', icon: 'check', to: '/registrations' },
   { label: 'Saved Events', icon: 'bookmark', to: '/saved' },
   { label: 'Profile', icon: 'users', to: '/profile' },
+  { label: 'Setting', icon: 'settings', to: '/settings' },
 ]
 
 export const clubNav = [
@@ -14,6 +15,7 @@ export const clubNav = [
   { label: 'Event Proposals', icon: 'calendar', to: '/proposal/new' },
   { label: 'Club Profile', icon: 'building', to: '/club/profile' },
   { label: 'Profile', icon: 'users', to: '/profile' },
+  { label: 'Setting', icon: 'settings', to: '/settings' },
 ]
 
 export const adminNav = [
@@ -24,6 +26,7 @@ export const adminNav = [
   { label: 'Manage Clubs', icon: 'users', to: '/admin/clubs' },
   { label: 'Assign Roles', icon: 'users', to: '/admin/assign-roles' },
   { label: 'Profile', icon: 'users', to: '/profile' },
+  { label: 'Setting', icon: 'settings', to: '/settings' },
 ]
 
 export const reviewerNav = [
@@ -32,4 +35,5 @@ export const reviewerNav = [
   { label: 'Proposal Requests', icon: 'calendar', to: '/review/proposals' },
   { label: 'Registration Reports', icon: 'users', to: '/reports/registrations' },
   { label: 'Profile', icon: 'users', to: '/profile' },
+  { label: 'Setting', icon: 'settings', to: '/settings' },
 ]

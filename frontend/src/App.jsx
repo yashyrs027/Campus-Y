@@ -21,6 +21,7 @@ import ReviewerProposalsPage from './pages/ReviewerProposalsPage'
 import ForgotPasswordPage from './pages/ForgotPasswordPage'
 import VerifyOtpPage from './pages/VerifyOtpPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
+import SettingsPage from './pages/SettingsPage'
 import PasswordResetSuccessPage from './pages/PasswordResetSuccessPage'
 import { getStoredUser, getToken, dashboardPathForRole } from './lib/api'
 
@@ -105,6 +106,14 @@ function App() {
         element={
           <ProtectedRoute>
             <ProfilePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <ProtectedRoute>
+            <SettingsPage />
           </ProtectedRoute>
         }
       />

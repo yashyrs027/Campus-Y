@@ -70,7 +70,6 @@ const createUser = async (userData) => {
 };
 
 const findUserById = async (userId) => {
-
     const query = `
         SELECT
             user_id,
@@ -98,7 +97,6 @@ const findUserById = async (userId) => {
 };
 
 const updateProfile = async (userId, userData) => {
-
     const query = `
         UPDATE users
         SET
@@ -107,8 +105,9 @@ const updateProfile = async (userId, userData) => {
             phone = $3,
             gender = $4,
             profile_image = $5,
+            student_id = COALESCE($6, student_id),
             updated_at = CURRENT_TIMESTAMP
-        WHERE user_id = $6
+        WHERE user_id = $7
         RETURNING
             user_id,
             first_name,
@@ -116,6 +115,7 @@ const updateProfile = async (userId, userData) => {
             email,
             phone,
             gender,
+            student_id,
             profile_image,
             updated_at;
     `;
@@ -126,6 +126,7 @@ const updateProfile = async (userId, userData) => {
         userData.phone,
         userData.gender,
         userData.profile_image,
+        userData.student_id || null,
         userId
     ];
 
@@ -135,7 +136,6 @@ const updateProfile = async (userId, userData) => {
 };
 
 const findPasswordByUserId = async (userId) => {
-
     const query = `
         SELECT password_hash
         FROM users
@@ -148,7 +148,6 @@ const findPasswordByUserId = async (userId) => {
 };
 
 const updatePassword = async (userId, passwordHash) => {
-
     const query = `
         UPDATE users
         SET
