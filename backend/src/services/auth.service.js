@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const authRepository = require("../repositories/auth.repository");
 const dashboardRepository = require("../repositories/dashboard.repository");
 const jwt = require("jsonwebtoken");
+const ApiError = require("../utils/ApiError");
 
 const register = async (userData) => {
 
@@ -9,7 +10,7 @@ const register = async (userData) => {
     const existingUser = await authRepository.findUserByEmail(userData.email);
 
     if (existingUser) {
-        throw new Error("Email already exists.");
+        throw new ApiError(400, "This email address is already registered. Please login or use a different email.");
     }
 
     // Hash password
@@ -31,7 +32,7 @@ const login = async (email, password) => {
     const user = await authRepository.findUserByEmail(email);
 
     if (!user) {
-        throw new Error("Invalid email or password.");
+        throw new ApiError(401, "Incorrect email or password. Please try again.");
     }
 
     // Compare password
@@ -41,7 +42,7 @@ const login = async (email, password) => {
     );
 
     if (!isPasswordMatch) {
-        throw new Error("Invalid email or password.");
+        throw new ApiError(401, "Incorrect email or password. Please try again.");
     }
 
     // Generate JWT

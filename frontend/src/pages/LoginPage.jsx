@@ -17,7 +17,8 @@ const roleOptions = [
 function LoginPage() {
   const navigate = useNavigate()
   const [mode, setMode] = useState('login')
-  const [selectedRole, setSelectedRole] = useState(6)
+    const [selectedRole, setSelectedRole] = useState(6)
+  const [showPassword, setShowPassword] = useState(false)
   const [form, setForm] = useState({
     first_name: '',
     last_name: '',
@@ -26,6 +27,7 @@ function LoginPage() {
     department_id: '',
     phone: '',
     gender: '',
+    student_id: '',
   })
   const [departments, setDepartments] = useState([])
   const [status, setStatus] = useState({ loading: false, message: '', tone: 'info' })
@@ -35,6 +37,11 @@ function LoginPage() {
       .then((catalog) => setDepartments(catalog.departments))
       .catch(() => setDepartments([]))
   }, [])
+
+  // Clear validation/error messages whenever toggling between login and register modes
+  useEffect(() => {
+    setStatus({ loading: false, message: '', tone: 'info' })
+  }, [mode])
 
   const updateField = (event) => {
     setForm((current) => ({ ...current, [event.target.name]: event.target.value }))
@@ -104,6 +111,10 @@ function LoginPage() {
               </label>
             </div>
             <label>
+              <span>Student ID / Roll No</span>
+              <input name="student_id" onChange={updateField} placeholder="e.g. 21CS001" required value={form.student_id} />
+            </label>
+            <label>
               <span>Department</span>
               <select name="department_id" onChange={updateField} required value={form.department_id}>
                 <option value="">Select department</option>
@@ -136,10 +147,38 @@ function LoginPage() {
           <input name="email" onChange={updateField} placeholder="name@university.edu" required type="email" value={form.email} />
         </label>
         <label>
-          <span style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span>Password</span>
-          </span>
-          <input minLength="8" name="password" onChange={updateField} placeholder="Password" required type="password" value={form.password} />
+          <span>Password</span>
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <input
+              minLength="8"
+              name="password"
+              onChange={updateField}
+              placeholder="Password"
+              required
+              type={showPassword ? 'text' : 'password'}
+              value={form.password}
+              style={{ width: '100%', paddingRight: '44px' }}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? 'Hide password' : 'Show password'}
+              style={{
+                position: 'absolute',
+                right: '12px',
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: 'var(--muted)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '4px',
+              }}
+            >
+              <Icon name={showPassword ? 'eyeOff' : 'eye'} />
+            </button>
+          </div>
         </label>
         <label className="remember-row">
             {mode === 'login' && (
@@ -173,6 +212,7 @@ function LoginPage() {
             onClick={() => {
               setMode(mode === 'login' ? 'register' : 'login')
               setSelectedRole(6)
+              setStatus({ loading: false, message: '', tone: 'info' })
             }}
             type="button"
           >

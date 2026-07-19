@@ -30,7 +30,12 @@ const registerValidation = [
 
     body("gender")
         .isIn(["Male", "Female", "Other"])
-        .withMessage("Gender is required")
+        .withMessage("Gender is required"),
+
+    body("student_id")
+        .trim()
+        .notEmpty()
+        .withMessage("Student ID / Roll No is required")
 ];
 
 const loginValidation = [
@@ -50,6 +55,7 @@ const validate = (req, res, next) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({
             success: false,
+            message: errors.array()[0].msg,
             errors: errors.array()
         });
     }
