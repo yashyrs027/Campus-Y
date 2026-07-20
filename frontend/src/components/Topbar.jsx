@@ -1,12 +1,15 @@
 import { useEffect, useState, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import SearchBar from './SearchBar'
+import Icon from './Icon'
 import { getStoredUser, clearSession, api } from '../lib/api'
+import { initTheme, applyTheme } from '../lib/theme'
 
 function Topbar({ title, user = 'Alex Rivera', role = 'Student' }) {
   const navigate = useNavigate()
   const [currentUser, setCurrentUser] = useState(null)
   const [isOpen, setIsOpen] = useState(false)
+  const [theme, setTheme] = useState(() => initTheme())
   const dropdownRef = useRef(null)
 
   useEffect(() => {
@@ -25,6 +28,12 @@ function Topbar({ title, user = 'Alex Rivera', role = 'Student' }) {
     }
   }, [])
 
+  const handleToggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark'
+    setTheme(nextTheme)
+    applyTheme(nextTheme)
+  }
+
   const handleLogout = async () => {
     try {
       await api.logout()
@@ -38,9 +47,21 @@ function Topbar({ title, user = 'Alex Rivera', role = 'Student' }) {
 
   return (
     <header className="topbar">
-      {/* {title && <h1>{title}</h1>} */}
       <SearchBar />
-      <div className="topbar-actions">
+      <div className="topbar-actions" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+        
+        {/* Dynamic Theme Toggle Button (Light / Dark Mode Switch) */}
+        <button
+          type="button"
+          onClick={handleToggleTheme}
+          aria-label={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          className="theme-toggle-btn"
+        >
+          <Icon name={theme === 'dark' ? 'sun' : 'moon'} />
+        </button>
+
+        {/* User Profile Widget */}
         <div className="user-pill-container" ref={dropdownRef}>
           <button 
             type="button"

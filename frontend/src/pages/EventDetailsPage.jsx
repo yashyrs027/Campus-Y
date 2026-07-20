@@ -147,18 +147,18 @@ function EventDetailsPage() {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
-            <div style={{ background: '#f8fafc', padding: '20px', borderRadius: 'var(--radius)', border: '1px solid var(--border-soft)', display: 'flex', gap: '16px', alignItems: 'center' }}>
-              <div style={{ display: 'inline-flex', background: '#eff6ff', color: 'var(--primary)', padding: '12px', borderRadius: '12px', fontSize: '24px' }}>
+            <div style={{ background: 'var(--surface-soft)', padding: '20px', borderRadius: 'var(--radius)', border: '1px solid var(--border-soft)', display: 'flex', gap: '16px', alignItems: 'center' }}>
+              <div style={{ display: 'inline-flex', background: 'var(--surface-card)', color: 'var(--primary)', padding: '12px', borderRadius: '12px', fontSize: '24px' }}>
                 <Icon name="calendar" />
               </div>
               <div>
                 <span style={{ display: 'block', fontSize: '13px', color: 'var(--muted)', textTransform: 'uppercase', fontWeight: '600' }}>Date & Time</span>
-                <strong style={{ fontSize: '16px', color: 'var(--text)' }}>{event.date}</strong>
+                <strong style={{ fontSize: '16px', color: 'var(--text-strong)' }}>{event.date}</strong>
               </div>
             </div>
 
-            <div style={{ background: '#f8fafc', padding: '20px', borderRadius: 'var(--radius)', border: '1px solid var(--border-soft)', display: 'flex', gap: '16px', alignItems: 'center' }}>
-              <div style={{ display: 'inline-flex', background: '#eff6ff', color: 'var(--primary)', padding: '12px', borderRadius: '12px', fontSize: '24px' }}>
+            <div style={{ background: 'var(--surface-soft)', padding: '20px', borderRadius: 'var(--radius)', border: '1px solid var(--border-soft)', display: 'flex', gap: '16px', alignItems: 'center' }}>
+              <div style={{ display: 'inline-flex', background: 'var(--surface-card)', color: 'var(--primary)', padding: '12px', borderRadius: '12px', fontSize: '24px' }}>
                 <Icon name="mapPin" />
               </div>
               <div>

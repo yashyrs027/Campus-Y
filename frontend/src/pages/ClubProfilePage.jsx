@@ -134,7 +134,7 @@ function ClubProfilePage() {
             </Button>
           </div>
 
-          <div className="panel" style={{ background: '#fff', border: '1px solid var(--border)' }}>
+          <div className="panel" style={{ background: 'var(--surface-card)', border: '1px solid var(--border)' }}>
             <div style={{ borderBottom: '1px solid var(--border-soft)', paddingBottom: '20px', marginBottom: '24px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span className="chip chip-blue">{selectedClub.department_name || 'General'}</span>

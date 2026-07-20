@@ -249,24 +249,24 @@ function TrackProposalsPage() {
         <small style={{ color: 'var(--muted)', display: 'block', marginBottom: '8px', fontWeight: 'bold', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Approval Timeline</small>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px 18px', alignItems: 'center' }}>
           {stages.map((stage, idx) => {
-            let badgeBg = '#eef2f6'
-            let badgeColor = '#5e6475'
-            let bulletColor = '#bdc7dd'
+            let badgeBg = 'var(--surface-soft)'
+            let badgeColor = 'var(--muted)'
+            let bulletColor = 'var(--border)'
             let textWeight = 'normal'
 
             if (stage.state === 'done') {
-              badgeBg = '#dcfce7'
-              badgeColor = '#047857'
-              bulletColor = '#0f9f6e'
+              badgeBg = 'rgba(16, 185, 129, 0.15)'
+              badgeColor = 'var(--success)'
+              bulletColor = 'var(--success)'
             } else if (stage.state === 'pending') {
-              badgeBg = '#fff4d6'
-              badgeColor = '#a16207'
-              bulletColor = '#d98a11'
+              badgeBg = 'rgba(245, 158, 11, 0.15)'
+              badgeColor = 'var(--warning)'
+              bulletColor = 'var(--warning)'
               textWeight = 'bold'
             } else if (stage.state === 'rejected') {
-              badgeBg = '#fee2e2'
-              badgeColor = '#991b1b'
-              bulletColor = '#c81e1e'
+              badgeBg = 'rgba(239, 68, 68, 0.15)'
+              badgeColor = 'var(--danger)'
+              bulletColor = 'var(--danger)'
               textWeight = 'bold'
             }
 
@@ -277,7 +277,7 @@ function TrackProposalsPage() {
                   {stage.name}
                   {stage.state === 'pending' && <small style={{ marginLeft: '4px', fontSize: '9px', textTransform: 'uppercase' }}>(Pending)</small>}
                 </span>
-                {idx < stages.length - 1 && <span style={{ color: '#bdc7dd', fontSize: '12px' }}>➔</span>}
+                {idx < stages.length - 1 && <span style={{ color: 'var(--muted)', fontSize: '12px' }}>➔</span>}
               </div>
             )
           })}
@@ -320,10 +320,10 @@ function TrackProposalsPage() {
                 padding: '8px 16px',
                 borderRadius: '6px',
                 border: '1px solid var(--border-soft)',
-                background: statusFilter === opt ? 'var(--primary)' : '#fff',
+                background: statusFilter === opt ? 'var(--primary)' : 'var(--surface-card)',
                 color: statusFilter === opt ? '#fff' : 'var(--text)',
                 cursor: 'pointer',
-                fontWeight: statusFilter === opt ? '6px' : 'normal',
+                fontWeight: statusFilter === opt ? '600' : 'normal',
                 transition: 'all 0.15s ease'
               }}
             >
@@ -390,7 +390,7 @@ function TrackProposalsPage() {
                             )}
                             <button
                               className="btn btn-secondary"
-                              style={{ padding: '4px 10px', fontSize: '12px', border: '1px solid var(--border-soft)', background: '#fff', borderRadius: '4px', cursor: 'pointer' }}
+                              style={{ padding: '4px 10px', fontSize: '12px', border: '1px solid var(--border-soft)', background: 'var(--surface-soft)', color: 'var(--text-strong)', borderRadius: '4px', cursor: 'pointer' }}
                             >
                               {isExpanded ? 'Hide' : 'Track'}
                             </button>
@@ -399,7 +399,7 @@ function TrackProposalsPage() {
                       </tr>
                       {isExpanded && (
                         <tr>
-                          <td colSpan="6" style={{ background: '#fcfdfe', padding: '20px 24px', borderTop: 'none' }}>
+                          <td colSpan="6" style={{ background: 'var(--surface-soft)', color: 'var(--text-strong)', padding: '20px 24px', borderTop: 'none' }}>
                             <div style={{ display: 'grid', gap: '14px' }}>
                               <p style={{ margin: 0, fontSize: '14px', whiteSpace: 'pre-wrap' }}>
                                 <strong>Description:</strong> {proposal.description || 'No description provided.'}
@@ -412,9 +412,9 @@ function TrackProposalsPage() {
                               </div>
                               {renderTimeline(proposal)}
                               {proposal.status === 'Rejected' && proposal.rejection_reason && (
-                                <div style={{ background: '#fee2e2', borderLeft: '4px solid var(--danger)', padding: '10px 14px', borderRadius: '4px', marginTop: '4px' }}>
-                                  <strong style={{ color: '#991b1b', fontSize: '13px', display: 'block' }}>Rejection Reason:</strong>
-                                  <span style={{ color: '#7f1d1d', fontSize: '13px' }}>{proposal.rejection_reason}</span>
+                                <div style={{ background: 'rgba(239, 68, 68, 0.15)', borderLeft: '4px solid var(--danger)', padding: '10px 14px', borderRadius: '4px', marginTop: '4px' }}>
+                                  <strong style={{ color: 'var(--danger)', fontSize: '13px', display: 'block' }}>Rejection Reason:</strong>
+                                  <span style={{ color: 'var(--text-strong)', fontSize: '13px' }}>{proposal.rejection_reason}</span>
                                 </div>
                               )}
                             </div>
@@ -446,8 +446,8 @@ function TrackProposalsPage() {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'rgba(0, 0, 0, 0.45)',
-          backdropFilter: 'blur(3px)',
+          background: 'rgba(0, 0, 0, 0.65)',
+          backdropFilter: 'blur(4px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -455,14 +455,16 @@ function TrackProposalsPage() {
           padding: '20px'
         }}>
           <div style={{
-            background: '#fff',
+            background: 'var(--surface-card)',
+            color: 'var(--text-strong)',
+            border: '1px solid var(--border)',
             borderRadius: '12px',
             padding: '24px',
             width: '100%',
             maxWidth: '600px',
             maxHeight: '90vh',
             overflowY: 'auto',
-            boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)'
+            boxShadow: 'var(--shadow)'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid var(--border-soft)', paddingBottom: '12px' }}>
               <h3 style={{ margin: 0, color: 'var(--primary-strong)' }}>Edit Event Proposal</h3>

@@ -327,7 +327,7 @@ function ProfilePage() {
               {/* Conditional Field: Student ID / Roll No */}
               {isStudentRole && (
                 <label>
-                  <span>Student ID / Roll No</span>
+                  <span>Student ID / Faculty ID</span>
                   <input
                     name="student_id"
                     value={profile.student_id}

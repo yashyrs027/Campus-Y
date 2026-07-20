@@ -454,7 +454,7 @@ function ProposalPage() {
               </table>
 
               {/* Event Banner / Poster Upload Section (Optional) */}
-              <div style={{ marginTop: '16px', padding: '20px', background: '#f8fafc', borderRadius: 'var(--radius)', border: '1px solid var(--border-soft)' }}>
+              <div style={{ marginTop: '16px', padding: '20px', background: 'var(--surface-soft)', borderRadius: 'var(--radius)', border: '1px solid var(--border-soft)' }}>
                 <h4 style={{ fontSize: '15px', fontWeight: '600', margin: '0 0 6px 0', color: 'var(--text-strong)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Icon name="bookmark" /> Event Poster / Banner (Optional)
                 </h4>

@@ -111,7 +111,7 @@ function LoginPage() {
               </label>
             </div>
             <label>
-              <span>Student ID / Roll No</span>
+              <span>Student ID / Faculty ID </span>
               <input name="student_id" onChange={updateField} placeholder="e.g. 21CS001" required value={form.student_id} />
             </label>
             <label>

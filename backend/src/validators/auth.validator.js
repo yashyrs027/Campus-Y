@@ -35,7 +35,7 @@ const registerValidation = [
     body("student_id")
         .trim()
         .notEmpty()
-        .withMessage("Student ID / Roll No is required")
+        .withMessage("Student ID / Faculty ID is required")
 ];
 
 const loginValidation = [

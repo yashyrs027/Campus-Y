@@ -141,33 +141,33 @@ function EventsPage() {
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          style={{ border: '1px solid #c9cfdf', borderRadius: 'var(--radius)', minHeight: '48px', padding: '0 16px', background: '#fbfbff', color: '#303747' }}
+          style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius)', minHeight: '48px', padding: '0 16px', background: 'var(--surface-card)', color: 'var(--text-strong)' }}
         >
-          <option value="">All Categories</option>
+          <option value="" style={{ background: 'var(--surface-card)', color: 'var(--text-strong)' }}>All Categories</option>
           {catalog.event_categories.map((cat) => (
-            <option key={cat.category_id} value={cat.category_id}>{cat.category_name}</option>
+            <option key={cat.category_id} value={cat.category_id} style={{ background: 'var(--surface-card)', color: 'var(--text-strong)' }}>{cat.category_name}</option>
           ))}
         </select>
 
         <select
           value={selectedStatus}
           onChange={(e) => setSelectedStatus(e.target.value)}
-          style={{ border: '1px solid #c9cfdf', borderRadius: 'var(--radius)', minHeight: '48px', padding: '0 16px', background: '#fbfbff', color: '#303747' }}
+          style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius)', minHeight: '48px', padding: '0 16px', background: 'var(--surface-card)', color: 'var(--text-strong)' }}
         >
-          <option value="">All Statuses</option>
-          <option value="Ongoing">Ongoing</option>
-          <option value="Upcoming">Upcoming</option>
-          <option value="Completed">Completed</option>
+          <option value="" style={{ background: 'var(--surface-card)', color: 'var(--text-strong)' }}>All Statuses</option>
+          <option value="Ongoing" style={{ background: 'var(--surface-card)', color: 'var(--text-strong)' }}>Ongoing</option>
+          <option value="Upcoming" style={{ background: 'var(--surface-card)', color: 'var(--text-strong)' }}>Upcoming</option>
+          <option value="Completed" style={{ background: 'var(--surface-card)', color: 'var(--text-strong)' }}>Completed</option>
         </select>
 
         <select
           value={selectedClub}
           onChange={(e) => setSelectedClub(e.target.value)}
-          style={{ border: '1px solid #c9cfdf', borderRadius: 'var(--radius)', minHeight: '48px', padding: '0 16px', background: '#fbfbff', color: '#303747' }}
+          style={{ border: '1px solid var(--border)', borderRadius: 'var(--radius)', minHeight: '48px', padding: '0 16px', background: 'var(--surface-card)', color: 'var(--text-strong)' }}
         >
-          <option value="">All Clubs</option>
+          <option value="" style={{ background: 'var(--surface-card)', color: 'var(--text-strong)' }}>All Clubs</option>
           {catalog.clubs.map((c) => (
-            <option key={c.club_id} value={c.club_id}>{c.club_name}</option>
+            <option key={c.club_id} value={c.club_id} style={{ background: 'var(--surface-card)', color: 'var(--text-strong)' }}>{c.club_name}</option>
           ))}
         </select>
       </section>

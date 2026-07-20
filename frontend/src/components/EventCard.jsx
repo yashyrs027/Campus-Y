@@ -76,6 +76,7 @@ function EventCard({ event, onRegister, registering, isSaved, onToggleSave, isEn
               top: '18px',
               right: '18px',
               zIndex: 2,
+              background: 'var(--surface)',
               ...(isSaved ? { background: 'var(--primary)', color: '#fff', borderColor: 'var(--primary)' } : {})
             }}
           >

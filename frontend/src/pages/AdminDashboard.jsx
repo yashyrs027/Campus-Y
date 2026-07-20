@@ -156,28 +156,28 @@ function AdminDashboard() {
 
       {/* Dynamic Expansion Panels */}
       {activeMetric && (
-        <section className="panel" style={{ marginTop: '24px', background: '#fff', border: '1px solid var(--primary-soft)', padding: '24px' }}>
+        <section className="panel" style={{ marginTop: '24px', background: 'var(--surface-card)', border: '1px solid var(--border-soft)', padding: '24px' }}>
           {activeMetric === 'users' && (
             <div>
               <h3><span style={{ color: 'var(--primary)' }}>👤</span> Total Users Breakdown</h3>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '16px', marginTop: '20px', textAlign: 'center' }}>
-                <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '8px' }}>
+                <div style={{ background: 'var(--surface-soft)', padding: '14px', borderRadius: '8px' }}>
                   <strong>Admin</strong>
                   <div style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--primary)', marginTop: '6px' }}>{usersStats.admin}</div>
                 </div>
-                <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '8px' }}>
+                <div style={{ background: 'var(--surface-soft)', padding: '14px', borderRadius: '8px' }}>
                   <strong>HOD</strong>
                   <div style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--primary)', marginTop: '6px' }}>{usersStats.hod}</div>
                 </div>
-                <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '8px' }}>
+                <div style={{ background: 'var(--surface-soft)', padding: '14px', borderRadius: '8px' }}>
                   <strong>Faculty</strong>
                   <div style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--primary)', marginTop: '6px' }}>{usersStats.faculty}</div>
                 </div>
-                <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '8px' }}>
+                <div style={{ background: 'var(--surface-soft)', padding: '14px', borderRadius: '8px' }}>
                   <strong>Club President / VP</strong>
                   <div style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--primary)', marginTop: '6px' }}>{usersStats.coordinator}</div>
                 </div>
-                <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '8px' }}>
+                <div style={{ background: 'var(--surface-soft)', padding: '14px', borderRadius: '8px' }}>
                   <strong>Student</strong>
                   <div style={{ fontSize: '24px', fontWeight: 'bold', color: 'var(--primary)', marginTop: '6px' }}>{usersStats.student}</div>
                 </div>

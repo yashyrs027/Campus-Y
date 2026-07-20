@@ -1,6 +1,6 @@
 .marketing-header {
   align-items: center;
-  background: rgb(255 255 255 / 0.84);
+  background: var(--surface-card);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-soft);
   display: flex;
@@ -38,7 +38,7 @@
 }
 
 .eyebrow {
-  background: #e9f0ff;
+  background: var(--surface-soft);
   border-radius: 999px;
   color: var(--primary-strong);
   display: inline-flex;
@@ -65,7 +65,7 @@
 }
 
 .hero-visual {
-  background: linear-gradient(135deg, #ffffff, #dbe7ff);
+  background: var(--surface-card);
   border: 1px solid var(--border);
   border-radius: 20px;
   box-shadow: var(--shadow);
@@ -75,7 +75,7 @@
 }
 
 .screen-card {
-  background: #fff;
+  background: var(--surface-soft);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
@@ -83,7 +83,7 @@
 }
 
 .screen-top {
-  background: #e8eefb;
+  background: var(--surface-card);
   border-radius: var(--radius);
   height: 40px;
   margin-bottom: 20px;
@@ -98,7 +98,7 @@
 
 .screen-chart span,
 .bar-chart span {
-  background: linear-gradient(180deg, var(--primary), #c6d8f6);
+  background: linear-gradient(180deg, var(--primary), var(--primary-soft));
   border-radius: 6px 6px 0 0;
   flex: 1;
   height: var(--height);
@@ -111,13 +111,13 @@
 }
 
 .screen-lines span {
-  background: #edf1f8;
+  background: var(--border-soft);
   border-radius: 999px;
   height: 12px;
 }
 
 .floating-card {
-  background: #fff;
+  background: var(--surface-card);
   border: 1px solid var(--border-soft);
   border-radius: var(--radius-lg);
   bottom: 36px;
@@ -137,7 +137,7 @@
 }
 
 .stats-strip {
-  background: #fff;
+  background: var(--surface-card);
   border-block: 1px solid var(--border-soft);
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -201,7 +201,8 @@
 }
 
 .feature-card {
-  background: #fff;
+  background: var(--surface-card);
+  border: 1px solid var(--border-soft);
   border-radius: var(--radius-lg);
   padding: 24px;
 }
@@ -234,8 +235,9 @@
 }
 
 .workflow-row span {
-  background: #fff;
+  background: var(--surface-card);
   border: 1px solid var(--border);
+  color: var(--text-strong);
   border-radius: 999px;
   padding: 14px;
 }
@@ -350,10 +352,10 @@
 
 .filter-panel button:not(.btn) {
   align-items: center;
-  background: #fbfbff;
-  border: 1px solid #c9cfdf;
+  background: var(--surface-card);
+  border: 1px solid var(--border);
   border-radius: var(--radius);
-  color: #303747;
+  color: var(--text-strong);
   display: flex;
   justify-content: space-between;
   min-height: 48px;
@@ -383,7 +385,8 @@
 }
 
 .campus-illustration {
-  background: linear-gradient(135deg, #fff, #dfe9ff);
+  background: var(--surface-card);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
   display: grid;
@@ -394,11 +397,8 @@
 }
 
 .campus-illustration span {
-  background:
-    radial-gradient(circle at 18% 45%, #b9ccff 0 24px, transparent 25px),
-    radial-gradient(circle at 52% 35%, #9db9ff 0 28px, transparent 29px),
-    linear-gradient(135deg, #eef4ff, #ffffff);
-  border: 1px solid #c8d6ff;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
 }
 
@@ -422,8 +422,9 @@
  .login-card {
   width: 100%;
   max-width: 620px;
-  background: #fff;
-  border: 1px solid var(--border-soft);
+  background: var(--surface-card);
+  color: var(--text-strong);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow);
   display: grid;
@@ -433,6 +434,7 @@
 
 .login-card h2 {
   font-size: 30px;
+  color: var(--text-strong);
 }
 
 .login-card p {
@@ -447,8 +449,9 @@
 
 .role-grid button,
 .google-button {
-  background: #fff;
-  border: 1px solid #bdc7dd;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  color: var(--text-strong);
   border-radius: var(--radius);
   min-height: 48px;
 }
@@ -457,6 +460,7 @@
   background: var(--primary);
   color: #fff;
   font-weight: 700;
+  border-color: var(--primary);
 }
 
 .login-card label,
@@ -467,6 +471,7 @@
 
 .login-card label span,
 .proposal-form label span {
+  color: var(--muted);
   font-family: "JetBrains Mono", ui-monospace, monospace;
   font-size: 12px;
   letter-spacing: 0.05em;
@@ -478,7 +483,9 @@
 .proposal-form input,
 .proposal-form select,
 .proposal-form textarea {
-  border: 1px solid #bdc7dd;
+  border: 1px solid var(--border);
+  background-color: var(--surface-soft);
+  color: var(--text-strong);
   border-radius: var(--radius);
   min-height: 52px;
   outline: none;
@@ -523,7 +530,7 @@
 }
 
 .stepper {
-  background: #fbfbff;
+  background: var(--surface-card);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   display: grid;
@@ -534,14 +541,15 @@
 }
 
 .stepper span {
-  color: var(--muted-2);
+  color: var(--muted);
   display: grid;
   gap: 10px;
   justify-items: center;
 }
 
 .stepper b {
-  background: #e7ecfb;
+  background: var(--surface-soft);
+  color: var(--text-strong);
   border-radius: 999px;
   display: grid;
   height: 40px;
@@ -555,7 +563,7 @@
 }
 
 .stepper .active b {
-  background: var(--primary);
+  background: var(--primary-strong);
   color: #fff;
 }
 

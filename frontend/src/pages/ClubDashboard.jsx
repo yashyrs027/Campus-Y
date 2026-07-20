@@ -81,24 +81,24 @@ function ClubDashboard() {
         <small style={{ color: 'var(--muted)', display: 'block', marginBottom: '8px', fontWeight: 'bold', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Approval Timeline</small>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px 18px', alignItems: 'center' }}>
           {stages.map((stage, idx) => {
-            let badgeBg = '#eef2f6'
-            let badgeColor = '#5e6475'
-            let bulletColor = '#bdc7dd'
+            let badgeBg = 'var(--surface-soft)'
+            let badgeColor = 'var(--muted)'
+            let bulletColor = 'var(--border)'
             let textWeight = 'normal'
 
             if (stage.state === 'done') {
-              badgeBg = '#dcfce7'
-              badgeColor = '#047857'
-              bulletColor = '#0f9f6e'
+              badgeBg = 'rgba(16, 185, 129, 0.15)'
+              badgeColor = 'var(--success)'
+              bulletColor = 'var(--success)'
             } else if (stage.state === 'pending') {
-              badgeBg = '#fff4d6'
-              badgeColor = '#a16207'
-              bulletColor = '#d98a11'
+              badgeBg = 'rgba(245, 158, 11, 0.15)'
+              badgeColor = 'var(--warning)'
+              bulletColor = 'var(--warning)'
               textWeight = 'bold'
             } else if (stage.state === 'rejected') {
-              badgeBg = '#fee2e2'
-              badgeColor = '#991b1b'
-              bulletColor = '#c81e1e'
+              badgeBg = 'rgba(239, 68, 68, 0.15)'
+              badgeColor = 'var(--danger)'
+              bulletColor = 'var(--danger)'
               textWeight = 'bold'
             }
 
@@ -109,7 +109,7 @@ function ClubDashboard() {
                   {stage.name}
                   {stage.state === 'pending' && <small style={{ marginLeft: '4px', fontSize: '9px', textTransform: 'uppercase' }}>(Pending)</small>}
                 </span>
-                {idx < stages.length - 1 && <span style={{ color: '#bdc7dd', fontSize: '12px' }}>➔</span>}
+                {idx < stages.length - 1 && <span style={{ color: 'var(--muted)', fontSize: '12px' }}>➔</span>}
               </div>
             )
           })}
@@ -154,7 +154,7 @@ function ClubDashboard() {
 
           <div style={{ display: 'grid', gap: '20px' }}>
             {proposals.map((proposal) => (
-              <div key={proposal.proposal_id} style={{ border: '1px solid var(--border-soft)', borderRadius: 'var(--radius)', padding: '20px', background: '#fff' }}>
+              <div key={proposal.proposal_id} style={{ border: '1px solid var(--border-soft)', borderRadius: 'var(--radius)', padding: '20px', background: 'var(--surface-card)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px' }}>
                   <div>
                     <h4 style={{ margin: '0 0 6px 0', fontSize: '18px', color: 'var(--primary-strong)' }}>{proposal.title}</h4>
@@ -179,9 +179,9 @@ function ClubDashboard() {
                 </div>
                 {renderTimeline(proposal)}
                 {proposal.status === 'Rejected' && proposal.rejection_reason && (
-                  <div style={{ background: '#fee2e2', borderLeft: '4px solid var(--danger)', padding: '10px 14px', borderRadius: '4px', marginTop: '12px' }}>
-                    <strong style={{ color: '#991b1b', fontSize: '13px', display: 'block' }}>Rejection Reason:</strong>
-                    <span style={{ color: '#7f1d1d', fontSize: '13px' }}>{proposal.rejection_reason}</span>
+                  <div style={{ background: 'rgba(239, 68, 68, 0.15)', borderLeft: '4px solid var(--danger)', padding: '10px 14px', borderRadius: '4px', marginTop: '12px' }}>
+                    <strong style={{ color: 'var(--danger)', fontSize: '13px', display: 'block' }}>Rejection Reason:</strong>
+                    <span style={{ color: 'var(--text-strong)', fontSize: '13px' }}>{proposal.rejection_reason}</span>
                   </div>
                 )}
               </div>
