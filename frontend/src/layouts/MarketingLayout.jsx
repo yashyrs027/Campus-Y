@@ -13,7 +13,6 @@ function MarketingLayout({ children }) {
         </nav>
         <div className="header-actions">
           <Button to="/login" >Login</Button>
-          {/* <Button to="/login">Sign up</Button> */}
         </div>
       </header>
       {children}

@@ -5,7 +5,7 @@ import Icon from './Icon'
 import { getStoredUser, clearSession, api } from '../lib/api'
 import { initTheme, applyTheme } from '../lib/theme'
 
-function Topbar({ title, user = 'Alex Rivera', role = 'Student' }) {
+function Topbar({ title, user = 'Alex Rivera', role = 'Student', onToggleSidebar, isSidebarOpen }) {
   const navigate = useNavigate()
   const [currentUser, setCurrentUser] = useState(null)
   const [isOpen, setIsOpen] = useState(false)
@@ -47,7 +47,20 @@ function Topbar({ title, user = 'Alex Rivera', role = 'Student' }) {
 
   return (
     <header className="topbar">
-      <SearchBar />
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1', minWidth: 0 }}>
+        {!isSidebarOpen && (
+          <button
+            type="button"
+            onClick={onToggleSidebar}
+            className="topbar-hamburger-btn"
+            aria-label="Toggle Sidebar Navigation"
+            title="Toggle Sidebar Navigation"
+          >
+            <Icon name="menu" />
+          </button>
+        )}
+        <SearchBar />
+      </div>
       <div className="topbar-actions" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         
         {/* Dynamic Theme Toggle Button (Light / Dark Mode Switch) */}
