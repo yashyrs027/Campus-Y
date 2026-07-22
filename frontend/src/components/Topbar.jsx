@@ -1,6 +1,5 @@
 import { useEffect, useState, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import SearchBar from './SearchBar'
+import { useNavigate } from 'react-router-dom'
 import Icon from './Icon'
 import { getStoredUser, clearSession, api } from '../lib/api'
 import { initTheme, applyTheme } from '../lib/theme'
@@ -10,6 +9,7 @@ function Topbar({ title, user = 'Alex Rivera', role = 'Student', onToggleSidebar
   const [currentUser, setCurrentUser] = useState(null)
   const [isOpen, setIsOpen] = useState(false)
   const [theme, setTheme] = useState(() => initTheme())
+  const [searchQuery, setSearchQuery] = useState('')
   const dropdownRef = useRef(null)
 
   useEffect(() => {
@@ -23,9 +23,7 @@ function Topbar({ title, user = 'Alex Rivera', role = 'Student', onToggleSidebar
       }
     }
     document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
+    return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
   const handleToggleTheme = () => {
@@ -45,6 +43,14 @@ function Topbar({ title, user = 'Alex Rivera', role = 'Student', onToggleSidebar
     }
   }
 
+  const handleSearchSubmit = (e) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      navigate(`/events?q=${encodeURIComponent(searchQuery.trim())}`)
+      setSearchQuery('')
+    }
+  }
+
   return (
     <header className="topbar">
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: '1', minWidth: 0 }}>
@@ -59,7 +65,26 @@ function Topbar({ title, user = 'Alex Rivera', role = 'Student', onToggleSidebar
             <Icon name="menu" />
           </button>
         )}
-        <SearchBar />
+        <form onSubmit={handleSearchSubmit} style={{ flex: 1, minWidth: 0 }}>
+          <label className="search-bar">
+            <Icon name="search" />
+            <input
+              placeholder="Search events..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                style={{ background: 'none', border: 'none', color: 'var(--muted)', cursor: 'pointer', padding: '0 4px', display: 'flex' }}
+                aria-label="Clear search"
+              >
+                <Icon name="x" />
+              </button>
+            )}
+          </label>
+        </form>
       </div>
       <div className="topbar-actions" style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
         

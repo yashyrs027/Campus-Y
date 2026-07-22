@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import Button from '../components/Button'
 import EventCard from '../components/EventCard'
 import Notice from '../components/Notice'
@@ -10,12 +10,13 @@ import { api, getSavedEventIds, getStoredUser, normalizeEvent, roleLabels, setSa
 
 function EventsPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const user = useMemo(() => getStoredUser(), [])
   const [events, setEvents] = useState([])
   const [catalog, setCatalog] = useState({ clubs: [], event_categories: [] })
-  
-  // Filter states
-  const [query, setQuery] = useState('')
+
+  // Filter states — seed query from URL ?q= param
+  const [query, setQuery] = useState(() => searchParams.get('q') || '')
   const [selectedCategory, setSelectedCategory] = useState('')
   const [selectedStatus, setSelectedStatus] = useState('')
   const [selectedClub, setSelectedClub] = useState('')
